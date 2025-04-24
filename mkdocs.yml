@@ -2,7 +2,7 @@ site_name: My Docs
 nav:
   - Home: index.md
   - Contributors:
-      - Contributors: contributors.md
+      - Contributors: CONTRIBUTORS.md
   - Contributing:
-      - Contributing: contributing.md
+      - Contributing: CONTRIBUTING.md
 theme: readthedocs
