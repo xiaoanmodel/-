@@ -1,0 +1,35 @@
+name: 📄 章节任务认领
+description: 用于认领与更新具体章节的任务
+title: "[章节认领] <章节名>"
+labels: ["task", "in-progress"]
+assignees:
+  - your-github-id
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢认领章节任务，请填写以下内容协助任务追踪。
+  - type: input
+    id: chapter
+    attributes:
+      label: 章节路径
+      description: 如 `docs/1_system_design/architecture.md`
+      placeholder: 输入文件路径
+    validations:
+      required: true
+  - type: input
+    id: goal
+    attributes:
+      label: 本次任务目标
+      placeholder: 描述你计划完成的内容（如：补全架构图及描述）
+  - type: dropdown
+    id: progress
+    attributes:
+      label: 当前进度状态
+      options:
+        - 📝 撰写中
+        - ✅ 已提交 PR
+        - 🔍 待审核
+        - ⛳ 已合并完成
+    validations:
+      required: true
