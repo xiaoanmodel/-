@@ -31,7 +31,7 @@ docs/
 └── README.md
 ```
 
-各文件说明请参考 `README.md`。
+各文件说明请参考 [index.md](./index.md)。
 
 ## 👤 角色分工
 
