@@ -11,6 +11,7 @@ For full documentation visit [mkdocs.org](https://www.mkdocs.org).
 
 ## Project layout
 
+```
 docs/
 ├── README.md                        # 文档首页，项目简介与导航
 ├── 0_project_overview/             # 项目概述
@@ -41,3 +42,4 @@ docs/
 │   ├── references.bib              # 核心参考文献BibTeX
 │   ├── figures/                    # 所有插图（架构图、实验图等）
 │   └── questions_answered.md      # 常见答辩/开题问题汇总
+```
