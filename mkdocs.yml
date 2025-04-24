@@ -1,4 +1,8 @@
 site_name: My Docs
 nav:
   - Home: index.md
+  - Contributors:
+      - Contributors: contributors.md
+  - Contributing:
+      - Contributing: contributing.md
 theme: readthedocs
