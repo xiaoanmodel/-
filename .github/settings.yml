@@ -1,5 +1,5 @@
 repository:
-  name: 小安组文档库
+  name: docs
   description: 小安组文档库
   default_branch: main
   allow_merge_commit: false
