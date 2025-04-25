@@ -5,4 +5,6 @@ nav:
       - Contributors: CONTRIBUTORS.md
   - Contributing:
       - Contributing: CONTRIBUTING.md
+      - GitHub Workflow:
+          - GitHub Workflow: docs/github_workflow.md
 theme: readthedocs

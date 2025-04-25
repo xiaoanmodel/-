@@ -53,6 +53,8 @@ docs/
 
 ## 🔁 工作流程
 
+>  详细的工作流程请参考 [GitHub Workflow](./github_workflow.md)。
+
 1. 在 GitHub 创建 Issue，认领章节任务（可使用模板）
 2. 创建分支并撰写内容
 3. 提交 Pull Request
