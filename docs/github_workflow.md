@@ -47,6 +47,8 @@ git checkout -b feature/123-add-login
 git checkout -b fix/145-fix-crash
 ```
 
+#### 文档相关命名规范
+
 | 类型 | 命名规范 |
 |------|----------|
 | 分支名 | `feature/<issue编号-章节名>` 或 `fix/<issue编号-修复点>` |
