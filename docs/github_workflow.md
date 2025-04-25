@@ -109,9 +109,9 @@ git checkout -b fix/145-fix-crash
 
 ## 6️⃣ 合并与清理
 
-### 合并方式建议
+### 合并方式
 
-- `Squash and merge`：保持主分支简洁，适合多人贡献的小变更
+- `Squash and merge`：保持主分支简洁，适合多人贡献的小变更(暂时pr强制使用squash and merge）)
 - `Rebase and merge`：保持线性提交历史
 - 避免使用 `Merge commit`（除非确有必要）
 
