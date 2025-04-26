@@ -1,0 +1,53 @@
+name: Lark Notify
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Notification
+        uses: northwang-lucky/chatbot-webhook-client@latest
+        with:
+          app: Lark
+          webhook: ${{ secrets.LARK_WEBHOOK }}
+          template: >-
+            {
+              "msg_type": "interactive",
+              "card": {
+                "schema": "2.0",
+                "header": {
+                  "title": {
+                    "tag": "plain_text",
+                    "content": "🔔 Issue Update"
+                  },
+                  "template": "blue"
+                },
+                "body": {
+                  "direction": "vertical",
+                  "elements": [
+                    {
+                      "tag": "markdown",
+                      "content": "**标题：**${{ github.event.issue.title }}\n**操作：**${{ github.event.action }}\n**用户：**${{ github.event.issue.user.login }}\n**内容：**${{ github.event.issue.body }}"
+                    },
+                    {
+                      "tag": "button",
+                      "text": {
+                        "tag": "plain_text",
+                        "content": "👉 查看详情"
+                      },
+                      "type": "primary",
+                      "behaviors": [
+                        {
+                          "type": "open_url",
+                          "default_url": "${{ github.event.issue.html_url }}"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          github-token: ${{ secrets.GITHUB_TOKEN }}
