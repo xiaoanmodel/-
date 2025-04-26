@@ -29,8 +29,10 @@ jobs:
                   "direction": "vertical",
                   "elements": [
                     {
-                      "tag": "markdown",
-                      "content": "**标题：**${{ github.event.issue.title }}\n**操作：**${{ github.event.action }}\n**用户：**${{ github.event.issue.user.login }}\n**内容：**${{ github.event.issue.body }}"
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": "**仓库：**${{ github.event.repository.full_name }}\n**操作：**${{ github.event.action }}\n**用户：**${{ github.event.issue.user.login }}\n**内容：**${{ github.event.issue.body }}"
                     },
                     {
                       "tag": "button",
