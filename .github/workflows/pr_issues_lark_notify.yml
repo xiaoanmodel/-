@@ -2,70 +2,75 @@ name: PR Lark Notify
 
 on:
     pull_request:
-        types: [opened, edited, reopened, closed, synchronize]
+        types:
+            - opened
+            - edited
+            - reopened
+            - closed
+            - synchronize
 
 jobs:
     notify:
         runs-on: ubuntu-latest
         steps:
             - name: Send Notification
-                uses: northwang-lucky/chatbot-webhook-client@v1.1.1
-                with:
-                    app: Lark
-                    webhook: ${{ secrets.LARK_WEBHOOK }}
-                    template: >-
-                        {
-                            "msg_type": "interactive",
-                            "card": {
-                                "schema": "2.0",
-                                "header": {
-                                    "title": {
-                                        "tag": "plain_text",
-                                        "content": "🔄 Pull Request Update"
-                                    },
-                                    "template": "green"
-                                },
-                                "body": {
-                                    "direction": "vertical",
-                                    "elements": [
-                                        {
-                                            "tag": "div",
-                                            "text": 
-                                                {
-                                                    "tag": "lark_md",
-                                                    "content": "**仓库：** ${{ github.event.repository.full_name }}\n**标题:** ${{ github.event.pull_request.title }}\n**状态：** ${{ github.event.pull_request.state }}\n**操作：** ${{ github.event.action }}\n**作者：** ${{ github.event.pull_request.user.login }}\n**触发者：** ${{ github.actor }}\n**时间：** ${{ github.event.pull_request.updated_at }}\n**内容：** \n "
-                                                }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": ${{ toJSON(github.event.pull_request.body) }}
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": "**从：** ${{ github.event.pull_request.head.ref }} → **到：** ${{ github.event.pull_request.base.ref }}"
-                                            }
-                                        },
-                                        {
-                                            "tag": "button",
-                                            "text": {
-                                                "tag": "plain_text",
-                                                "content": "👉 查看详情"
-                                            },
-                                            "type": "primary",
-                                            "behaviors": [
-                                                {
-                                                    "type": "open_url",
-                                                    "default_url": "${{ github.event.pull_request.html_url }}"
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        }
-                    github-token: ${{ secrets.GITHUB_TOKEN }}
+              uses: northwang-lucky/chatbot-webhook-client@v1.1.1
+              with:
+                  app: Lark
+                  webhook: ${{ secrets.LARK_WEBHOOK }}
+                  template: >-
+                      {
+                          "msg_type": "interactive",
+                          "card": {
+                              "schema": "2.0",
+                              "header": {
+                                  "title": {
+                                      "tag": "plain_text",
+                                      "content": "🔄 Pull Request Update"
+                                  },
+                                  "template": "green"
+                              },
+                              "body": {
+                                  "direction": "vertical",
+                                  "elements": [
+                                      {
+                                          "tag": "div",
+                                          "text": 
+                                              {
+                                                  "tag": "lark_md",
+                                                  "content": "**仓库：** ${{ github.event.repository.full_name }}\n**标题:** ${{ github.event.pull_request.title }}\n**状态：** ${{ github.event.pull_request.state }}\n**操作：** ${{ github.event.action }}\n**作者：** ${{ github.event.pull_request.user.login }}\n**触发者：** ${{ github.actor }}\n**时间：** ${{ github.event.pull_request.updated_at }}\n**内容：** \n "
+                                              }
+                                      },
+                                      {
+                                          "tag": "div",
+                                          "text": {
+                                              "tag": "lark_md",
+                                              "content": ${{ toJSON(github.event.pull_request.body) }}
+                                          }
+                                      },
+                                      {
+                                          "tag": "div",
+                                          "text": {
+                                              "tag": "lark_md",
+                                              "content": "**从：** ${{ github.event.pull_request.head.ref }} → **到：** ${{ github.event.pull_request.base.ref }}"
+                                          }
+                                      },
+                                      {
+                                          "tag": "button",
+                                          "text": {
+                                              "tag": "plain_text",
+                                              "content": "👉 查看详情"
+                                          },
+                                          "type": "primary",
+                                          "behaviors": [
+                                              {
+                                                  "type": "open_url",
+                                                  "default_url": "${{ github.event.pull_request.html_url }}"
+                                              }
+                                          ]
+                                      }
+                                  ]
+                              }
+                          }
+                      }
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
