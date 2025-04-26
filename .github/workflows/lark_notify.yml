@@ -32,8 +32,7 @@ jobs:
                       "tag": "div",
                       "text": {
                         "tag": "lark_md",
-                        "content": "**仓库：**${{ github.event.repository.full_name }}\n**操作：**${{ github.event.action }}\n**用户：**${{ github.event.issue.user.login }}\n**内容：**${{ github.event.issue.body }}"
-                        }
+                        "content": "<b>仓库：</b>${{ github.event.repository.full_name }}<br><b>操作：</b>${{ github.event.action }}<br><b>用户：</b>${{ github.event.issue.user.login }}<br><b>内容：</b>${{ github.event.issue.body }}"                   }
                     },
                     {
                       "tag": "button",
