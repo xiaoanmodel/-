@@ -25,26 +25,29 @@ jobs:
                   },
                   "template": "blue"
                 },
-                "elements": [
-                  {
-                    "tag": "lark_md",
-                    "content": "**标题：** ${{ github.event.issue.title }}\n**操作：** ${{ github.event.action }}\n**用户：** ${{ github.event.issue.user.login }}\n**内容：** ${{ github.event.issue.body }}"
-                  },
-                  {
-                    "tag": "action",
-                    "actions": [
-                      {
-                        "tag": "button",
-                        "text": {
-                          "tag": "plain_text",
-                          "content": "👉 查看详情"
-                        },
-                        "type": "primary",
-                        "url": "${{ github.event.issue.html_url }}"
-                      }
-                    ]
-                  }
-                ]
+                "body": {
+                  "direction": "vertical",
+                  "elements": [
+                    {
+                      "tag": "lark_md",
+                      "content": "**标题：**${{ github.event.issue.title }}\n**操作：**${{ github.event.action }}\n**用户：**${{ github.event.issue.user.login }}\n**内容：**${{ github.event.issue.body }}"
+                    },
+                    {
+                      "tag": "button",
+                      "text": {
+                        "tag": "plain_text",
+                        "content": "👉 查看详情"
+                      },
+                      "type": "primary",
+                      "behaviors": [
+                        {
+                          "type": "open_url",
+                          "default_url": "${{ github.event.issue.html_url }}"
+                        }
+                      ]
+                    }
+                  ]
+                }
               }
             }
           github-token: ${{ secrets.GITHUB_TOKEN }}
