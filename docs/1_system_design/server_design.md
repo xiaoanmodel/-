@@ -2,7 +2,7 @@
 
 ## 一、概述
 本项目采用Flask框架进行docker之间的通信与接口调用，主要实现了图像上传、图像处理、状态查询等功能。整个服务由多个接口组成，支持图像上传、处理结果查询以及图像处理状态的管理。以下是整体交互流程图：
-![时序图](..\4_appendices\figures\whiteboard_exported_image.png)
+![时序图](../4_appendices/figures/whiteboard_exported_image.png)
 
 ## 二、Mask Server
 
