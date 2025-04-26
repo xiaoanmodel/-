@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send Notification
-        uses: northwang-lucky/chatbot-webhook-client@latest
+        uses: northwang-lucky/chatbot-webhook-client@v1.1.1
         with:
           app: Lark
           webhook: ${{ secrets.LARK_WEBHOOK }}
