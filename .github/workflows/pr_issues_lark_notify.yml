@@ -149,7 +149,7 @@ jobs:
                                             "tag": "div",
                                             "text": {
                                                 "tag": "lark_md",
-                                                "content": "**从：** ${{github.event.pull_request.head.ref}} **分支：** 到 ${{github.event.pull_request.base.ref}}"
+                                                "content": "**从：** ${{github.event.pull_request.head.ref}} **分支** 到 ${{github.event.pull_request.base.ref}} **分支** "
                                             }
                                         },
                                         {
