@@ -1,0 +1,171 @@
+{
+      "msg_type": "interactive",
+      "card": {
+          "schema": "2.0",
+          "header": {
+              "title": {
+                  "tag": "plain_text",
+                  "content": "🔄 Pull Request Update"
+              },
+              "template": "green"
+          },
+          "body": {
+              "direction": "vertical",
+              "elements": [
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "**仓库：**"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "xiaoanmodel/docs"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "**标题：**"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "测试"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "**状态：**"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "open"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "**操作：**"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "opened"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "**作者：**"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "sanchuanhehe"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "**触发者：**"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "sanchuanhehe"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "**时间：**"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "2025-04-26T14:41:20Z"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "**内容：**"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "# 📝 Pull Request 模板\r\n\r\n## 📌 相关 Issue\r\n\r\n- 关联的 Issue 编号（如 `Closes #123` 或 `Fixes #456`）：\r\n\r\n## ✨ 改动内容\r\n\r\n- [ ] 修复了 Bug\r\n- [ ] 添加了新功能\r\n- [ ] 优化了现有代码\r\n- [ ] 更新了文档\r\n\r\n### 具体改动\r\n\r\n1. 描述改动的主要内容：\r\n   - ...\r\n   - ...\r\n2. 涉及的模块或文件：\r\n   - ...\r\n   - ...\r\n\r\n## ✅ 检查清单\r\n\r\n- [ ] 代码是否通过了本地测试？\r\n- [ ] 是否更新了相关文档？\r\n- [ ] 是否包含必要的单元测试？\r\n\r\n## 📸 截图或演示（可选）\r\n\r\n- 如果有 UI 改动，请附上截图或录屏。\r\n\r\n## 👥 Reviewer 建议\r\n\r\n- 是否需要指定 Reviewer？\r\n  - [ ] 是（请填写 Reviewer 名称）\r\n  - [ ] 否\r\n"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "**从：**"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": test
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": "**到：**"
+                                }
+                            },
+                            {
+                                "tag": "div",
+                                "text": {
+                                    "tag": "lark_md",
+                                    "content": main
+                                }
+                            }
+                            {
+                                "tag": "button",
+                                "text": {
+                                    "tag": "plain_text",
+                                    "content": "👉 查看详情"
+                            },
+                            "type": "primary",
+                            "behaviors": [
+                                {
+                                    "type": "open_url",
+                                    "default_url": "https://github.com/xiaoanmodel/docs/pull/35"
+                                }
+                        ]
+                  }
+              ]
+          }
+      }
