@@ -156,7 +156,7 @@ jobs:
                                                     "tag": "div",
                                                     "text": {
                                                         "tag": "lark_md",
-                                                        "content": ${{ github.event.pull_request.head.ref }}
+                                                        "content": ${{ toJSON(github.event.pull_request.head.ref) }}
                                                     }
                                                 },
                                                 {
@@ -170,9 +170,9 @@ jobs:
                                                     "tag": "div",
                                                     "text": {
                                                         "tag": "lark_md",
-                                                        "content": ${{ github.event.pull_request.base.ref }}
+                                                        "content": ${{ toJSON(github.event.pull_request.base.ref) }}
                                                     }
-                                                }
+                                                },
                                                 {
                                                     "tag": "button",
                                                     "text": {
@@ -183,7 +183,7 @@ jobs:
                                                 "behaviors": [
                                                     {
                                                         "type": "open_url",
-                                                        "default_url": "${{ github.event.pull_request.html_url }}"
+                                                        "default_url": "${{ toJSON(github.event.pull_request.html_url) }}"
                                                     }
                                             ]
                                       }
