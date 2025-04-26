@@ -30,7 +30,7 @@ jobs:
                   "elements": [
                     {
                       "tag": "markdown",
-                      "content": "**标题：**${{ github.event.issue.title }}\n**操作：**${{ github.event.action }}\n**用户：**${{ github.event.issue.user.login }}\n**内容：**${{ github.event.issue.body }}"
+                      "content": "<b>标题：</b>${{ github.event.issue.title }}\n<b>操作：</b>${{ github.event.action }}\n<b>用户：</b>${{ github.event.issue.user.login }}\n<b>内容：</b>${{ github.event.issue.body }}"
                     },
                     {
                       "tag": "button",
