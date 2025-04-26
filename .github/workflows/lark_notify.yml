@@ -2,7 +2,7 @@ name: Lark Notify
 
 on:
   issues:
-    types: [opened, edited, reopened]
+    types: [opened, edited, reopened, closed, deleted]
 
 jobs:
   notify:
