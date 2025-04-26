@@ -30,9 +30,17 @@ jobs:
                   "elements": [
                     {
                       "tag": "div",
+                      "text": 
+                        {
+                         "tag": "lark_md",
+                                    "content": "**仓库：** ${{ github.event.repository.full_name }}\n**标题:** ${{ github.event.issue.title }}\n**状态：** ${{ github.event.issue.state }}\n**操作：** ${{ github.event.action }}\n**用户：** ${{ github.event.issue.user.login }}\n\n**内容：** \n "
+                        }
+                    },
+                    {
+                      "tag": "div",
                       "text": {
                         "tag": "lark_md",
-                        "content": "**仓库：** ${{ github.event.repository.full_name }}\n**标题:** ${{ github.event.issue.title }}\n**状态：** ${{ github.event.issue.state }}\n**操作：** ${{ github.event.action }}\n**用户：** ${{ github.event.issue.user.login }}\n**内容：** ${{ toJSON(github.event.issue.body) }}"
+                        "content": ${{ toJSON(github.event.issue.body) }}
                       }
                     },
                     {
