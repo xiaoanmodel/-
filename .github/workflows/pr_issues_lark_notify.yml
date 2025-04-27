@@ -2,18 +2,23 @@ name: PR Lark Notify
 
 on:
     pull_request:
-        types: [opened, edited, reopened, closed, synchronize]
+        types:
+            - opened
+            - edited
+            - reopened
+            - closed
+            - synchronize
 
 jobs:
     notify:
         runs-on: ubuntu-latest
         steps:
             - name: Send Notification
-                uses: northwang-lucky/chatbot-webhook-client@v1.1.1
-                with:
-                    app: Lark
-                    webhook: ${{ secrets.LARK_WEBHOOK }}
-                    template: >-
+              uses: northwang-lucky/chatbot-webhook-client@v1.1.1
+              with:
+                  app: Lark
+                  webhook: ${{ secrets.LARK_WEBHOOK }}
+                  template: >-
                         {
                             "msg_type": "interactive",
                             "card": {
@@ -30,11 +35,108 @@ jobs:
                                     "elements": [
                                         {
                                             "tag": "div",
-                                            "text": 
-                                                {
-                                                    "tag": "lark_md",
-                                                    "content": "**仓库：** ${{ github.event.repository.full_name }}\n**标题:** ${{ github.event.pull_request.title }}\n**状态：** ${{ github.event.pull_request.state }}\n**操作：** ${{ github.event.action }}\n**作者：** ${{ github.event.pull_request.user.login }}\n**触发者：** ${{ github.actor }}\n**时间：** ${{ github.event.pull_request.updated_at }}\n**内容：** \n "
-                                                }
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": "**仓库：**"
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": ${{ toJSON(github.event.repository.full_name) }}
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": "**标题：**"
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": ${{ toJSON(github.event.pull_request.title) }}
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": "**状态：**"
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": ${{ toJSON(github.event.pull_request.state) }}
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": "**操作：**"
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": ${{ toJSON(github.event.action) }}
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": "**作者：**"
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": ${{ toJSON(github.event.pull_request.user.login) }}
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": "**触发者：**"
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": ${{ toJSON(github.actor) }}
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": "**时间：**"
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": ${{ toJSON(github.event.pull_request.updated_at) }}
+                                            }
+                                        },
+                                        {
+                                            "tag": "div",
+                                            "text": {
+                                                "tag": "lark_md",
+                                                "content": "**内容：**"
+                                            }
                                         },
                                         {
                                             "tag": "div",
@@ -47,7 +149,7 @@ jobs:
                                             "tag": "div",
                                             "text": {
                                                 "tag": "lark_md",
-                                                "content": "**从：** ${{ github.event.pull_request.head.ref }} → **到：** ${{ github.event.pull_request.base.ref }}"
+                                                "content": "**从：** ${{github.event.pull_request.head.ref}} **分支** 到 ${{github.event.pull_request.base.ref}} **分支** "
                                             }
                                         },
                                         {
@@ -60,12 +162,12 @@ jobs:
                                             "behaviors": [
                                                 {
                                                     "type": "open_url",
-                                                    "default_url": "${{ github.event.pull_request.html_url }}"
+                                                    "default_url": ${{ toJSON(github.event.pull_request.html_url) }}
                                                 }
-                                            ]
+                                            ]   
                                         }
                                     ]
                                 }
                             }
                         }
-                    github-token: ${{ secrets.GITHUB_TOKEN }}
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
