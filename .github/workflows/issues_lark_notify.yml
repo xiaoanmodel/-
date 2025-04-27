@@ -30,12 +30,116 @@ jobs:
                   "elements": [
                     {
                       "tag": "div",
-                      "text": 
-                        {
-                          "tag": "lark_md",
-                          "content": "**仓库：** ${{ github.event.repository.full_name }}\n**标题:** ${{ github.event.issue.title }}\n**状态：** ${{ github.event.issue.state }}\n**操作：** ${{ github.event.action }}\n**用户：** ${{ github.event.issue.user.login }}\n**触发者：** ${{ github.actor }}\n**时间：** ${{ github.event.issue.updated_at }}\n**内容：** \n "
-                        }
+                      "text": {
+                        "tag": "lark_md",
+                        "content": "**仓库：**"
+                      }
                     },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": ${{ toJSON(github.event.repository.full_name) }}
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": "**标题：**"
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": ${{ toJSON(github.event.issue.title) }}
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": "**状态：**"
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": ${{ toJSON(github.event.issue.state) }}
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": "**操作：**"
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": ${{ toJSON(github.event.action) }}
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": "**用户：**"
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": ${{ toJSON(github.event.issue.user.login) }}
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": "**触发者：**"
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": ${{ toJSON(github.actor) }}
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": "**时间：**"
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": ${{ toJSON(github.event.issue.updated_at) }}
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": "**内容：**"
+                      }
+                    },
+                    {
+                      "tag": "div",
+                      "text": {
+                        "tag": "lark_md",
+                        "content": ${{ toJSON(github.event.issue.body) }}
+                      }
+                    },  
                     {
                       "tag": "div",
                       "text": {
