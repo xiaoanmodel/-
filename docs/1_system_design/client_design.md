@@ -182,19 +182,8 @@ UI设计概述：本客户端使用基于ArkTS的声明式开发范式的UI设�
 - 实时显示本地传感器数据
 - 显示服务器回传信息
 
-前端UI部分示例：
-``` typescript
-ListItem() {
-  Image(this.imgSrc)
-    .width(210)
-    .height(280)
-    .backgroundColor(Color.Black)
-    .margin(5)
-    .border({ width: 1 })
-    .objectFit(ImageFit.Cover)
-    .overlay('', { align: Alignment.Bottom, offset: { x: 0, y: 20 } });
-}
-```
+![UI](..\4_appendices\figures\UI.png)
+
 
 
 
