@@ -113,9 +113,31 @@ jobs:
                     mapping = { mapping: {}, all: "all" };
                   }
                   
-                  // 直接使用结果，不需要进行JSON.parse
-                  const mentions = ${{ toJSON(steps.extract_mentions.outputs.result) }};
-                  console.log("提及列表:", JSON.stringify(mentions));
+                  // 获取提及列表
+                  let mentions = ${{ toJSON(steps.extract_mentions.outputs.result) }};
+                  console.log("提及列表原始数据:", JSON.stringify(mentions));
+                  
+                  // 确保mentions是数组格式
+                  if (!Array.isArray(mentions)) {
+                    // 如果是JSON字符串，尝试解析
+                    if (typeof mentions === 'string') {
+                      try {
+                        const parsedMentions = JSON.parse(mentions);
+                        if (Array.isArray(parsedMentions)) {
+                          mentions = parsedMentions;
+                        } else {
+                          mentions = [mentions]; // 如果解析结果不是数组，将其作为单个元素
+                        }
+                      } catch (e) {
+                        console.error("解析提及字符串失败:", e);
+                        mentions = [mentions]; // 解析失败，将整个字符串作为一个元素
+                      }
+                    } else {
+                      mentions = [mentions]; // 不是字符串也不是数组，作为单个元素
+                    }
+                  }
+                  
+                  console.log("处理后的提及列表:", JSON.stringify(mentions));
                   
                   const atElements = [];
                   
