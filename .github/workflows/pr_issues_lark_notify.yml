@@ -209,9 +209,9 @@ jobs:
                       "actor": ${{ toJSON(github.actor) }},
                       "updated_at": ${{ toJSON(github.event.pull_request.updated_at) }},
                       "pr_body": ${{ toJSON(github.event.pull_request.body) }},
-                      "head_ref": "${{github.event.pull_request.head.ref}}",
-                      "base_ref": "${{github.event.pull_request.base.ref}}",
-                      "html_url": "${{ github.event.pull_request.html_url }}",
+                      "head_ref": ${{toJSON(github.event.pull_request.head.ref)}},
+                      "base_ref": ${{toJSON(github.event.pull_request.base.ref)}},
+                      "html_url": ${{ toJSON(github.event.pull_request.html_url) }},
                       "usernames": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).userNames) }},
                       "at_markdown": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).atMarkdown) }}
                     }
