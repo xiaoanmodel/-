@@ -165,161 +165,19 @@ jobs:
         with:
           app: Lark
           webhook: ${{ secrets.LARK_WEBHOOK }}
-          template: >-
+          template: file://.github/templates/issue_notification.json
+          params: >-
             {
-              "msg_type": "interactive",
-              "card": {
-                "schema": "2.0",
-                "header": {
-                  "title": {
-                    "tag": "plain_text",
-                    "content": "🔔 Issue Update"
-                  },
-                  "template": "blue"
-                },
-                "body": {
-                  "direction": "vertical",
-                  "elements": [
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": "**仓库：**"
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": ${{ toJSON(github.event.repository.full_name) }}
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": "**标题：**"
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": ${{ toJSON(github.event.issue.title) }}
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": "**状态：**"
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": ${{ toJSON(github.event.issue.state) }}
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": "**操作：**"
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": ${{ toJSON(github.event.action) }}
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": "**用户：**"
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": ${{ toJSON(github.event.issue.user.login) }}
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": "**触发者：**"
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": ${{ toJSON(github.actor) }}
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": "**时间：**"
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": ${{ toJSON(github.event.issue.updated_at) }}
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": "**内容：**"
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": ${{ toJSON(github.event.issue.body) }}
-                      }
-                    },
-                    {
-                      "tag": "div",
-                      "text": {
-                        "tag": "lark_md",
-                        "content": "**相关人员：** ${{ fromJSON(steps.generate_at.outputs.result).userNames }}"
-                      }
-                    },
-                    {
-                      "tag": "button",
-                      "text": {
-                        "tag": "plain_text",
-                        "content": "👉 查看详情"
-                      },
-                      "type": "primary",
-                      "behaviors": [
-                        {
-                          "type": "open_url",
-                          "default_url": "${{ github.event.issue.html_url }}"
-                        }
-                      ]
-                    }
-                  ],
-                  "i18n_elements": {
-                    "zh_cn": [
-                      ${{ toJSON(fromJSON(steps.generate_at.outputs.result).atTags) }}
-                    ]
-                  }
-                }
-              }
+              "repository_name": ${{ toJSON(github.event.repository.full_name) }},
+              "issue_title": ${{ toJSON(github.event.issue.title) }},
+              "issue_state": ${{ toJSON(github.event.issue.state) }},
+              "action": ${{ toJSON(github.event.action) }},
+              "user_login": ${{ toJSON(github.event.issue.user.login) }},
+              "actor": ${{ toJSON(github.actor) }},
+              "updated_at": ${{ toJSON(github.event.issue.updated_at) }},
+              "issue_body": ${{ toJSON(github.event.issue.body) }},
+              "html_url": "${{ github.event.issue.html_url }}",
+              "usernames": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).userNames) }},
+              "at_tags": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).atTags) }}
             }
           github-token: ${{ secrets.GITHUB_TOKEN }}
