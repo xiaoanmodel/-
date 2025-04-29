@@ -45,8 +45,7 @@ Depth Anything 的核心思想为 **教师-学生框架**（Teacher-Student Para
 
 整体损失函数：
 
-$$
-\mathcal{L} = \lambda_{d} \cdot \mathcal{L}_{\text{depth}} + \lambda_{s} \cdot \mathcal{L}_{\text{semantic}} + \lambda_{a} \cdot \mathcal{L}_{\text{AffineInvariance}}$$
+![hhh](../4_appendices/figures/latex.png)
 
 - $\mathcal{L}_{\text{depth}}$：尺度-不变深度损失；
 - $\mathcal{L}_{\text{semantic}}$：辅助语义分割损失；
