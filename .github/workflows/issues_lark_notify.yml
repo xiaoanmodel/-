@@ -174,7 +174,8 @@ jobs:
       - name: Debug generated elements
         run: |
           echo "======== @元素调试 ========"
-          echo "Generated elements: ${{ toJSON(steps.generate_at.outputs.result) }}"
+          # 使用单引号而不是双引号，避免bash解析特殊字符
+          echo 'Generated elements:' '${{ toJSON(steps.generate_at.outputs.result) }}'
           echo "========================="
         
       - name: Send Notification
