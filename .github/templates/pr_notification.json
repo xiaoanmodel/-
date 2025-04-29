@@ -135,7 +135,7 @@
                     "tag": "div",
                     "text": {
                         "tag": "lark_md",
-                        "content": "**相关人员：** ${usernames} ${at_markdown}"
+                        "content": "**相关人员：** ${at_markdown}"
                     }
                 },
                 {
