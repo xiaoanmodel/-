@@ -163,10 +163,10 @@ jobs:
             console.log("最终@Markdown:", atMarkdown);
             console.log("==============================");
             
-            // 返回@标签及用户名，用于飞书消息模板
+            // 返回@标签及用户名，使用空格分隔而非逗号
             return {
               atTags: atElements,
-              userNames: atElements.map(item => item.user_name).join(', '),
+              userNames: atElements.map(item => item.user_name).join(' '), // 使用空格分隔
               atMarkdown: atMarkdown // 新的Markdown格式
             };
           result-encoding: json  # 指定结果编码为JSON
