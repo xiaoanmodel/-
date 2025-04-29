@@ -19,35 +19,56 @@ jobs:
       - name: Install js-yaml
         run: npm install js-yaml
         
+      - name: Debug Environment
+        run: |
+          echo "======== 环境信息 ========"
+          echo "Node.js 版本: $(node -v)"
+          echo "NPM 版本: $(npm -v)"
+          echo "工作目录: $(pwd)"
+          echo "文件列表: $(ls -la)"
+          echo "=========================="
+        
       - name: Read user mapping
         id: read_mapping
         run: |
+          echo "======== 用户映射文件 ========"
+          cat .github/user_mapping.yml
+          echo "=============================="
           echo "mapping=$(cat .github/user_mapping.yml | base64 -w0)" >> $GITHUB_OUTPUT
+          echo "读取映射文件完成，长度: $(cat .github/user_mapping.yml | wc -c) 字节"
           
       - name: Extract issue mentions
         id: extract_mentions
         uses: actions/github-script@v6
         with:
           script: |
+            console.log("======== 提取用户提及信息 ========");
             const issueBody = context.payload.issue.body || '';
+            console.log("Issue Body:", issueBody);
+            
             // 提取@用户名格式的提及
             const mentionRegex = /@([a-zA-Z0-9_-]+)/g;
             const mentions = [];
             let match;
             while ((match = mentionRegex.exec(issueBody)) !== null) {
+              console.log("找到提及:", match[1]);
               mentions.push(match[1]);
             }
             
             // 添加issue作者和触发者
             if(context.payload.issue.user && context.payload.issue.user.login) {
+              console.log("添加Issue作者:", context.payload.issue.user.login);
               mentions.push(context.payload.issue.user.login);
             }
             if(context.payload.sender && context.payload.sender.login) {
+              console.log("添加触发者:", context.payload.sender.login);
               mentions.push(context.payload.sender.login);
             }
             
             // 去重并转换为字符串传递
             const uniqueMentions = [...new Set(mentions)];
+            console.log("最终提及列表:", uniqueMentions);
+            console.log("===================================");
             return JSON.stringify(uniqueMentions);  // 将数组转为JSON字符串传递
 
       - name: Generate at elements
@@ -58,22 +79,41 @@ jobs:
             const yaml = require('js-yaml');
             const Buffer = require('buffer').Buffer;
             
+            console.log("======== 生成@标签元素 ========");
+            
             // 解码映射文件内容
             const mappingBase64 = '${{ steps.read_mapping.outputs.mapping }}';
+            console.log("映射文件base64长度:", mappingBase64.length);
+            
             const mappingContent = Buffer.from(mappingBase64, 'base64').toString('utf-8');
-            const mapping = yaml.load(mappingContent);
+            console.log("映射文件内容:", mappingContent);
+            
+            let mapping;
+            try {
+              mapping = yaml.load(mappingContent);
+              console.log("解析后的映射:", JSON.stringify(mapping));
+            } catch (error) {
+              console.error("解析YAML出错:", error);
+              mapping = { mapping: {}, all: "all" };
+            }
             
             // 解析为JSON对象
             let mentions = [];
             try {
               // 尝试解析JSON字符串
-              mentions = JSON.parse('${{ steps.extract_mentions.outputs.result }}');
+              const mentionsJson = '${{ steps.extract_mentions.outputs.result }}';
+              console.log("提及JSON字符串:", mentionsJson);
+              
+              mentions = JSON.parse(mentionsJson);
+              console.log("解析后的提及:", mentions);
+              
               // 确保mentions是一个数组
               if (!Array.isArray(mentions)) {
+                console.log("提及不是数组，转换为数组");
                 mentions = [mentions];
               }
             } catch (error) {
-              console.error('解析提及列表时出错:', error);
+              console.error("解析提及列表时出错:", error);
               mentions = [];
             }
             
@@ -82,17 +122,22 @@ jobs:
             // 为每个提及的用户创建@标签
             for (let i = 0; i < mentions.length; i++) {
               const username = mentions[i];
+              console.log("处理用户:", username);
               if (mapping.mapping && mapping.mapping[username]) {
+                console.log("找到映射:", username, "->", mapping.mapping[username]);
                 atElements.push({
                   tag: "at",
                   user_id: mapping.mapping[username],
                   user_name: username
                 });
+              } else {
+                console.log("未找到用户映射:", username);
               }
             }
             
             // 如果没有找到映射的用户，则@所有人
             if (atElements.length === 0) {
+              console.log("未找到映射用户，添加@所有人");
               atElements.push({
                 tag: "at",
                 user_id: mapping.all || "all",
@@ -100,8 +145,17 @@ jobs:
               });
             }
             
-            return JSON.stringify(atElements);  // 返回JSON字符串
+            const result = JSON.stringify(atElements);
+            console.log("最终@元素:", result);
+            console.log("==============================");
+            return result;  // 返回JSON字符串
 
+      - name: Debug generated elements
+        run: |
+          echo "======== @元素调试 ========"
+          echo "Generated elements: ${{ steps.generate_at.outputs.result }}"
+          echo "========================="
+        
       - name: Send Notification
         uses: northwang-lucky/chatbot-webhook-client@v1.1.1
         with:
