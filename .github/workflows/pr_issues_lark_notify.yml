@@ -193,26 +193,57 @@ jobs:
                 echo 'Generated elements:' '${{ toJSON(steps.generate_at.outputs.result) }}'
                 echo "========================="
 
+            - name: Prepare and validate JSON parameters
+              id: prepare_params
+              uses: actions/github-script@v6
+              with:
+                script: |
+                  console.log("======== 准备并验证JSON参数 ========");
+                  // 从生成的at元素中获取数据
+                  const atResult = ${{ toJSON(fromJSON(steps.generate_at.outputs.result)) }};
+                  
+                  // 构建参数对象
+                  const params = {
+                    "repository_name": context.payload.repository.full_name,
+                    "pr_title": context.payload.pull_request.title,
+                    "pr_state": context.payload.pull_request.state,
+                    "action": context.payload.action,
+                    "user_login": context.payload.pull_request.user.login,
+                    "actor": context.actor,
+                    "updated_at": context.payload.pull_request.updated_at,
+                    "pr_body": context.payload.pull_request.body || "",
+                    "head_ref": context.payload.pull_request.head.ref,
+                    "base_ref": context.payload.pull_request.base.ref,
+                    "html_url": context.payload.pull_request.html_url,
+                    "usernames": atResult.userNames,
+                    "at_markdown": atResult.atMarkdown
+                  };
+                  
+                  // 确保Markdown格式的at标签是有效的JSON字符串
+                  // 将尖括号和引号等特殊字符进行转义
+                  params.at_markdown = params.at_markdown.replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
+                  
+                  console.log("准备的参数:", JSON.stringify(params));
+                  
+                  // 验证JSON格式
+                  try {
+                    // 尝试将对象转为JSON字符串再解析回来，验证格式
+                    JSON.parse(JSON.stringify(params));
+                    console.log("JSON格式验证成功");
+                  } catch (e) {
+                    console.error("JSON格式验证失败:", e);
+                    throw new Error("JSON参数格式无效: " + e.message);
+                  }
+                  
+                  console.log("======== 参数准备完成 ========");
+                  return params;
+                result-encoding: json
+
             - name: Send Notification
               uses: northwang-lucky/chatbot-webhook-client@v1.1.1
               with:
                   app: Lark
                   webhook: ${{ secrets.LARK_WEBHOOK }}
                   template: file://.github/templates/pr_notification.json
-                  params: >-
-                    {
-                      "repository_name": ${{ toJSON(github.event.repository.full_name) }},
-                      "pr_title": ${{ toJSON(github.event.pull_request.title) }},
-                      "pr_state": ${{ toJSON(github.event.pull_request.state) }},
-                      "action": ${{ toJSON(github.event.action) }},
-                      "user_login": ${{ toJSON(github.event.pull_request.user.login) }},
-                      "actor": ${{ toJSON(github.actor) }},
-                      "updated_at": ${{ toJSON(github.event.pull_request.updated_at) }},
-                      "pr_body": ${{ toJSON(github.event.pull_request.body) }},
-                      "head_ref": ${{toJSON(github.event.pull_request.head.ref)}},
-                      "base_ref": ${{toJSON(github.event.pull_request.base.ref)}},
-                      "html_url": ${{ toJSON(github.event.pull_request.html_url) }},
-                      "usernames": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).userNames) }},
-                      "at_markdown": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).atMarkdown) }}
-                    }
+                  params: ${{ toJSON(steps.prepare_params.outputs.result) }}
                   github-token: ${{ secrets.GITHUB_TOKEN }}
