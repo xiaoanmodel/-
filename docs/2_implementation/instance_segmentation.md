@@ -27,7 +27,8 @@ Fast R-CNN 基于R-CNN进行了以下优化。
 
 Faster R-CNN 在 Fast R-CNN 的基础上通过以下改进进一步提升了效率和性能。
 
-![faster_rcnn](..\4_appendices\figures\faster_rcnn.png)
+
+![faster_rcnn](../4_appendices/figures/faster_rcnn.png)
 
 - 区域提议网络（Region Proposal Network, RPN）：这是 Faster R-CNN 最重要的创新点。与之前的 R-CNN 和 Fast R-CNN 使用选择性搜索等外部工具来生成候选区域不同，Faster R-CNN 引入了一个深度卷积网络（即 RPN），该网络可以与用于分类和回归的网络共享卷积特征层。这意味着候选区域的生成现在也可以通过学习得到，并且可以直接利用已经计算好的特征图，极大地提高了效率。
 - 共享卷积特征：Faster R-CNN 通过让 RPN 和后续的目标分类、边界框回归任务共享卷积层的输出，进一步减少了冗余计算。这种设计不仅加速了整个流程，也使得模型对输入图像的空间信息有了更好的理解。
@@ -36,7 +37,9 @@ Faster R-CNN 在 Fast R-CNN 的基础上通过以下改进进一步提升了效�
 
 Mask R-CNN 是在 Fast R-CNN 和 Faster R-CNN 基础上的进一步发展。
 
-![mask_rcnn](..\4_appendices\figures\mask_rcnn.png)
+
+![mask_rcnn](../4_appendices/figures/mask_rcnn.png)
+
 
 Faster R-CNN 引入了一个区域提议网络（Region Proposal Network, RPN），它允许模型自己学习如何提出候选区域，从而替代了外部的选择性搜索方法。在此基础上，Mask R-CNN 添加了一个用于预测每个实例掩膜的分支，因此除了进行分类和边界框回归之外，还能实现像素级别的分割，即实例分割。
 

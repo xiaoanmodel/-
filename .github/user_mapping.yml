@@ -1,0 +1,23 @@
+# GitHub用户名与飞书openid映射
+# 请将此文件中的OpenID替换为实际值
+# 格式：GitHub用户名: 飞书openid
+mapping:
+  # 项目负责人
+  sanchuanhehe: "ou_d4042db6505daf37672c5ec9e903255b"
+  # 系统设计
+  ottoiflu: "ou_eba99b93bbb499d0253ff5f1c902d703"
+  # 算法实现
+  case-keke: "ou_b30177b7793a23208d60f87f5a23e83f"
+  # 实验分析
+  yiran529: "ou_5228cbd6370f3dfee1f8d4f271237d64"
+  # 文献维护
+  JLY277: "ou_002acbc21bcb19a4c7788bf6e53deb89"
+  # 审校校对
+  MEssiah1k: "ou_0874ca93dc07cb31fe514d632ddabde6"
+  
+  # 可添加更多映射
+  # 例如：
+  # username: "ou_xxxxxxxx7"
+
+# @所有人的特殊映射
+all: "all"
