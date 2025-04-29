@@ -46,9 +46,9 @@ jobs:
               mentions.push(context.payload.sender.login);
             }
             
-            // 去重
+            // 去重并转换为字符串传递
             const uniqueMentions = [...new Set(mentions)];
-            return uniqueMentions;  // 直接返回数组，不用JSON.stringify
+            return JSON.stringify(uniqueMentions);  // 将数组转为JSON字符串传递
 
       - name: Generate at elements
         id: generate_at
@@ -63,12 +63,25 @@ jobs:
             const mappingContent = Buffer.from(mappingBase64, 'base64').toString('utf-8');
             const mapping = yaml.load(mappingContent);
             
-            // 不需要解析JSON，直接使用结果
-            const mentions = ${{ toJSON(steps.extract_mentions.outputs.result) }};
+            // 解析为JSON对象
+            let mentions = [];
+            try {
+              // 尝试解析JSON字符串
+              mentions = JSON.parse('${{ steps.extract_mentions.outputs.result }}');
+              // 确保mentions是一个数组
+              if (!Array.isArray(mentions)) {
+                mentions = [mentions];
+              }
+            } catch (error) {
+              console.error('解析提及列表时出错:', error);
+              mentions = [];
+            }
+            
             const atElements = [];
             
             // 为每个提及的用户创建@标签
-            mentions.forEach(username => {
+            for (let i = 0; i < mentions.length; i++) {
+              const username = mentions[i];
               if (mapping.mapping && mapping.mapping[username]) {
                 atElements.push({
                   tag: "at",
@@ -76,7 +89,7 @@ jobs:
                   user_name: username
                 });
               }
-            });
+            }
             
             // 如果没有找到映射的用户，则@所有人
             if (atElements.length === 0) {
@@ -87,7 +100,7 @@ jobs:
               });
             }
             
-            return atElements;  // 直接返回数组，不用JSON.stringify
+            return JSON.stringify(atElements);  // 返回JSON字符串
 
       - name: Send Notification
         uses: northwang-lucky/chatbot-webhook-client@v1.1.1
@@ -228,7 +241,7 @@ jobs:
                         "content": "**相关人员：**"
                       }
                     },
-                    ${{ toJSON(steps.generate_at.outputs.result) }},
+                    ${{ steps.generate_at.outputs.result }},
                     {
                       "tag": "button",
                       "text": {
