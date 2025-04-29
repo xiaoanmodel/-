@@ -84,7 +84,8 @@ jobs:
                   const uniqueMentions = [...new Set(mentions)];
                   console.log("最终提及列表:", uniqueMentions);
                   console.log("===================================");
-                  return JSON.stringify(uniqueMentions);  // 将数组转为JSON字符串传递
+                  return uniqueMentions;  // 直接返回数组，不转为JSON字符串
+                result-encoding: json  # 指定结果编码为JSON
 
             - name: Generate at elements
               id: generate_at
@@ -112,25 +113,9 @@ jobs:
                     mapping = { mapping: {}, all: "all" };
                   }
                   
-                  // 解析为JSON对象
-                  let mentions = [];
-                  try {
-                    // 尝试解析JSON字符串
-                    const mentionsJson = '${{ steps.extract_mentions.outputs.result }}';
-                    console.log("提及JSON字符串:", mentionsJson);
-                    
-                    mentions = JSON.parse(mentionsJson);
-                    console.log("解析后的提及:", mentions);
-                    
-                    // 确保mentions是一个数组
-                    if (!Array.isArray(mentions)) {
-                      console.log("提及不是数组，转换为数组");
-                      mentions = [mentions];
-                    }
-                  } catch (error) {
-                    console.error("解析提及列表时出错:", error);
-                    mentions = [];
-                  }
+                  // 直接使用结果，不需要进行JSON.parse
+                  const mentions = ${{ toJSON(steps.extract_mentions.outputs.result) }};
+                  console.log("提及列表:", JSON.stringify(mentions));
                   
                   const atElements = [];
                   
@@ -168,7 +153,8 @@ jobs:
                     atTags: atElements,
                     userNames: atElements.map(item => item.user_name).join(', ')
                   };
-                  
+                result-encoding: json  # 指定结果编码为JSON
+
             - name: Debug generated elements
               run: |
                 echo "======== @元素调试 ========"
