@@ -11,10 +11,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          
+      - name: Install js-yaml
+        run: npm install js-yaml
+        
       - name: Read user mapping
         id: read_mapping
         run: |
-          echo "::set-output name=mapping::$(cat .github/user_mapping.yml | base64 -w0)"
+          echo "mapping=$(cat .github/user_mapping.yml | base64 -w0)" >> $GITHUB_OUTPUT
           
       - name: Extract issue mentions
         id: extract_mentions
@@ -47,7 +55,6 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const fs = require('fs');
             const yaml = require('js-yaml');
             const Buffer = require('buffer').Buffer;
             
