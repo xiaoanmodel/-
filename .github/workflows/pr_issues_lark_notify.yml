@@ -240,7 +240,7 @@ jobs:
                 result-encoding: json
 
             - name: Send Notification
-              uses: northwang-lucky/chatbot-webhook-client@v1.1.1
+              uses: sanchuanhehe/chatbot-webhook-client@v1.1.2
               with:
                   app: Lark
                   webhook: ${{ secrets.LARK_WEBHOOK }}
