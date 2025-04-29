@@ -8,6 +8,79 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Read user mapping
+        id: read_mapping
+        run: |
+          echo "::set-output name=mapping::$(cat .github/user_mapping.yml | base64 -w0)"
+          
+      - name: Extract issue mentions
+        id: extract_mentions
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueBody = context.payload.issue.body || '';
+            // 提取@用户名格式的提及
+            const mentionRegex = /@([a-zA-Z0-9_-]+)/g;
+            const mentions = [];
+            let match;
+            while ((match = mentionRegex.exec(issueBody)) !== null) {
+              mentions.push(match[1]);
+            }
+            
+            // 添加issue作者和触发者
+            if(context.payload.issue.user && context.payload.issue.user.login) {
+              mentions.push(context.payload.issue.user.login);
+            }
+            if(context.payload.sender && context.payload.sender.login) {
+              mentions.push(context.payload.sender.login);
+            }
+            
+            // 去重
+            const uniqueMentions = [...new Set(mentions)];
+            return JSON.stringify(uniqueMentions);
+
+      - name: Generate at elements
+        id: generate_at
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const yaml = require('js-yaml');
+            const Buffer = require('buffer').Buffer;
+            
+            // 解码映射文件内容
+            const mappingBase64 = '${{ steps.read_mapping.outputs.mapping }}';
+            const mappingContent = Buffer.from(mappingBase64, 'base64').toString('utf-8');
+            const mapping = yaml.load(mappingContent);
+            
+            const mentions = JSON.parse('${{ steps.extract_mentions.outputs.result }}');
+            const atElements = [];
+            
+            // 为每个提及的用户创建@标签
+            mentions.forEach(username => {
+              if (mapping.mapping && mapping.mapping[username]) {
+                atElements.push({
+                  tag: "at",
+                  user_id: mapping.mapping[username],
+                  user_name: username
+                });
+              }
+            });
+            
+            // 如果没有找到映射的用户，则@所有人
+            if (atElements.length === 0) {
+              atElements.push({
+                tag: "at",
+                user_id: mapping.all || "all",
+                user_name: "所有人"
+              });
+            }
+            
+            return JSON.stringify(atElements);
+
       - name: Send Notification
         uses: northwang-lucky/chatbot-webhook-client@v1.1.1
         with:
@@ -139,14 +212,15 @@ jobs:
                         "tag": "lark_md",
                         "content": ${{ toJSON(github.event.issue.body) }}
                       }
-                    },  
+                    },
                     {
                       "tag": "div",
                       "text": {
                         "tag": "lark_md",
-                        "content": ${{ toJSON(github.event.issue.body) }}
+                        "content": "**相关人员：**"
                       }
                     },
+                    ${{ steps.generate_at.outputs.result }},
                     {
                       "tag": "button",
                       "text": {
