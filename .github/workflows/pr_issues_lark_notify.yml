@@ -213,7 +213,6 @@ jobs:
                       "base_ref": "${{github.event.pull_request.base.ref}}",
                       "html_url": "${{ github.event.pull_request.html_url }}",
                       "usernames": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).userNames) }},
-                      "at_tags": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).atTags) }},
                       "at_markdown": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).atMarkdown) }}
                     }
                   github-token: ${{ secrets.GITHUB_TOKEN }}
