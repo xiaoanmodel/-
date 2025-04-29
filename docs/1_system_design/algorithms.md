@@ -11,7 +11,7 @@ PCA分析方法
 
 **Depth Anything** 是由香港大学、浙江大学与 TikTok 联合提出的 **单目深度估计（Monocular Depth Estimation, MDE）** 框架。它通过结合 **有标签数据学习 + 无标签数据伪监督 + 语义辅助学习**，实现了在多场景、多尺度下鲁棒且高效的单目深度预测。
 
-> 原始论文：[Depth Anything: Unleashing the Power of Large-Scale Unlabeled Data](https://arxiv.org/abs/2403.09779)
+> 原始论文：[Depth Anything: Unleashing the Power of Large-Scale Unlabeled Data](https://arxiv.org/abs/2401.10891)
 
 ### （二）、核心原理
 
