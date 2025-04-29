@@ -13,161 +13,174 @@ jobs:
     notify:
         runs-on: ubuntu-latest
         steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+            
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                node-version: '16'
+                
+            - name: Install js-yaml
+              run: npm install js-yaml
+              
+            - name: Debug Environment
+              run: |
+                echo "======== 环境信息 ========"
+                echo "Node.js 版本: $(node -v)"
+                echo "NPM 版本: $(npm -v)"
+                echo "工作目录: $(pwd)"
+                echo "文件列表: $(ls -la)"
+                echo "=========================="
+            
+            - name: Read user mapping
+              id: read_mapping
+              run: |
+                echo "======== 用户映射文件 ========"
+                cat .github/user_mapping.yml
+                echo "=============================="
+                echo "mapping=$(cat .github/user_mapping.yml | base64 -w0)" >> $GITHUB_OUTPUT
+                echo "读取映射文件完成，长度: $(cat .github/user_mapping.yml | wc -c) 字节"
+                
+            - name: Extract PR mentions
+              id: extract_mentions
+              uses: actions/github-script@v6
+              with:
+                script: |
+                  console.log("======== 提取PR用户提及信息 ========");
+                  const prBody = context.payload.pull_request.body || '';
+                  console.log("PR Body:", prBody);
+                  
+                  // 提取@用户名格式的提及
+                  const mentionRegex = /@([a-zA-Z0-9_-]+)/g;
+                  const mentions = [];
+                  let match;
+                  while ((match = mentionRegex.exec(prBody)) !== null) {
+                    console.log("找到提及:", match[1]);
+                    mentions.push(match[1]);
+                  }
+                  
+                  // 添加PR作者、触发者和审核人员
+                  if(context.payload.pull_request.user && context.payload.pull_request.user.login) {
+                    console.log("添加PR作者:", context.payload.pull_request.user.login);
+                    mentions.push(context.payload.pull_request.user.login);
+                  }
+                  if(context.payload.sender && context.payload.sender.login) {
+                    console.log("添加触发者:", context.payload.sender.login);
+                    mentions.push(context.payload.sender.login);
+                  }
+                  
+                  // 添加审阅者
+                  const reviewers = context.payload.pull_request.requested_reviewers || [];
+                  console.log("审阅者列表:", reviewers);
+                  reviewers.forEach(reviewer => {
+                    if(reviewer.login) {
+                      console.log("添加审阅者:", reviewer.login);
+                      mentions.push(reviewer.login);
+                    }
+                  });
+                  
+                  // 去重
+                  const uniqueMentions = [...new Set(mentions)];
+                  console.log("最终提及列表:", uniqueMentions);
+                  console.log("===================================");
+                  return uniqueMentions;  // 直接返回数组，不转为JSON字符串
+                result-encoding: json  # 指定结果编码为JSON
+
+            - name: Generate at elements
+              id: generate_at
+              uses: actions/github-script@v6
+              with:
+                script: |
+                  const yaml = require('js-yaml');
+                  const Buffer = require('buffer').Buffer;
+                  
+                  console.log("======== 生成@标签元素 ========");
+                  
+                  // 解码映射文件内容
+                  const mappingBase64 = '${{ steps.read_mapping.outputs.mapping }}';
+                  console.log("映射文件base64长度:", mappingBase64.length);
+                  
+                  const mappingContent = Buffer.from(mappingBase64, 'base64').toString('utf-8');
+                  console.log("映射文件内容:", mappingContent);
+                  
+                  let mapping;
+                  try {
+                    mapping = yaml.load(mappingContent);
+                    console.log("解析后的映射:", JSON.stringify(mapping));
+                  } catch (error) {
+                    console.error("解析YAML出错:", error);
+                    mapping = { mapping: {}, all: "all" };
+                  }
+                  
+                  // 直接使用结果，不需要进行JSON.parse
+                  const mentions = ${{ toJSON(steps.extract_mentions.outputs.result) }};
+                  console.log("提及列表:", JSON.stringify(mentions));
+                  
+                  const atElements = [];
+                  
+                  // 为每个提及的用户创建@标签
+                  for (let i = 0; i < mentions.length; i++) {
+                    const username = mentions[i];
+                    console.log("处理用户:", username);
+                    if (mapping.mapping && mapping.mapping[username]) {
+                      console.log("找到映射:", username, "->", mapping.mapping[username]);
+                      atElements.push({
+                        tag: "at",
+                        user_id: mapping.mapping[username],
+                        user_name: username
+                      });
+                    } else {
+                      console.log("未找到用户映射:", username);
+                    }
+                  }
+                  
+                  // 如果没有找到映射的用户，则@所有人
+                  if (atElements.length === 0) {
+                    console.log("未找到映射用户，添加@所有人");
+                    atElements.push({
+                      tag: "at",
+                      user_id: mapping.all || "all",
+                      user_name: "所有人"
+                    });
+                  }
+                  
+                  console.log("最终@元素:", JSON.stringify(atElements));
+                  console.log("==============================");
+                  
+                  // 返回@标签及用户名，用于飞书消息模板
+                  return {
+                    atTags: atElements,
+                    userNames: atElements.map(item => item.user_name).join(', ')
+                  };
+                result-encoding: json  # 指定结果编码为JSON
+
+            - name: Debug generated elements
+              run: |
+                echo "======== @元素调试 ========"
+                echo "Generated elements: ${{ toJSON(steps.generate_at.outputs.result) }}"
+                echo "========================="
+
             - name: Send Notification
               uses: northwang-lucky/chatbot-webhook-client@v1.1.1
               with:
                   app: Lark
                   webhook: ${{ secrets.LARK_WEBHOOK }}
-                  template: >-
-                        {
-                            "msg_type": "interactive",
-                            "card": {
-                                "schema": "2.0",
-                                "header": {
-                                    "title": {
-                                        "tag": "plain_text",
-                                        "content": "🔄 Pull Request Update"
-                                    },
-                                    "template": "green"
-                                },
-                                "body": {
-                                    "direction": "vertical",
-                                    "elements": [
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": "**仓库：**"
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": ${{ toJSON(github.event.repository.full_name) }}
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": "**标题：**"
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": ${{ toJSON(github.event.pull_request.title) }}
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": "**状态：**"
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": ${{ toJSON(github.event.pull_request.state) }}
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": "**操作：**"
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": ${{ toJSON(github.event.action) }}
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": "**作者：**"
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": ${{ toJSON(github.event.pull_request.user.login) }}
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": "**触发者：**"
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": ${{ toJSON(github.actor) }}
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": "**时间：**"
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": ${{ toJSON(github.event.pull_request.updated_at) }}
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": "**内容：**"
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": ${{ toJSON(github.event.pull_request.body) }}
-                                            }
-                                        },
-                                        {
-                                            "tag": "div",
-                                            "text": {
-                                                "tag": "lark_md",
-                                                "content": "**从：** ${{github.event.pull_request.head.ref}} **分支** 到 ${{github.event.pull_request.base.ref}} **分支** "
-                                            }
-                                        },
-                                        {
-                                            "tag": "button",
-                                            "text": {
-                                                "tag": "plain_text",
-                                                "content": "👉 查看详情"
-                                            },
-                                            "type": "primary",
-                                            "behaviors": [
-                                                {
-                                                    "type": "open_url",
-                                                    "default_url": ${{ toJSON(github.event.pull_request.html_url) }}
-                                                }
-                                            ]   
-                                        }
-                                    ]
-                                }
-                            }
-                        }
+                  template: file://.github/templates/pr_notification.json
+                  params: >-
+                    {
+                      "repository_name": ${{ toJSON(github.event.repository.full_name) }},
+                      "pr_title": ${{ toJSON(github.event.pull_request.title) }},
+                      "pr_state": ${{ toJSON(github.event.pull_request.state) }},
+                      "action": ${{ toJSON(github.event.action) }},
+                      "user_login": ${{ toJSON(github.event.pull_request.user.login) }},
+                      "actor": ${{ toJSON(github.actor) }},
+                      "updated_at": ${{ toJSON(github.event.pull_request.updated_at) }},
+                      "pr_body": ${{ toJSON(github.event.pull_request.body) }},
+                      "head_ref": "${{github.event.pull_request.head.ref}}",
+                      "base_ref": "${{github.event.pull_request.base.ref}}",
+                      "html_url": "${{ github.event.pull_request.html_url }}",
+                      "usernames": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).userNames) }},
+                      "at_tags": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).atTags) }}
+                    }
                   github-token: ${{ secrets.GITHUB_TOKEN }}
