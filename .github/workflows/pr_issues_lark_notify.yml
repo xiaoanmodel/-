@@ -160,15 +160,19 @@ jobs:
                     });
                   }
                   
-                  const result = JSON.stringify(atElements);
-                  console.log("最终@元素:", result);
+                  console.log("最终@元素:", JSON.stringify(atElements));
                   console.log("==============================");
-                  return result;  // 返回JSON字符串
+                  
+                  // 返回@标签及用户名，用于飞书消息模板
+                  return {
+                    atTags: atElements,
+                    userNames: atElements.map(item => item.user_name).join(', ')
+                  };
                   
             - name: Debug generated elements
               run: |
                 echo "======== @元素调试 ========"
-                echo "Generated elements: ${{ steps.generate_at.outputs.result }}"
+                echo "Generated elements: ${{ toJSON(steps.generate_at.outputs.result) }}"
                 echo "========================="
 
             - name: Send Notification
@@ -314,10 +318,9 @@ jobs:
                                             "tag": "div",
                                             "text": {
                                                 "tag": "lark_md",
-                                                "content": "**相关人员：**"
+                                                "content": "**相关人员：** ${{ fromJSON(steps.generate_at.outputs.result).userNames }}"
                                             }
                                         },
-                                        ${{ steps.generate_at.outputs.result }},
                                         {
                                             "tag": "button",
                                             "text": {
@@ -332,7 +335,12 @@ jobs:
                                                 }
                                             ]   
                                         }
-                                    ]
+                                    ],
+                                    "i18n_elements": {
+                                        "zh_cn": [
+                                          ${{ toJSON(fromJSON(steps.generate_at.outputs.result).atTags) }}
+                                        ]
+                                    }
                                 }
                             }
                         }
