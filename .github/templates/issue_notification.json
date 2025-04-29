@@ -128,7 +128,7 @@
           "tag": "div",
           "text": {
             "tag": "lark_md",
-            "content": "**相关人员：** ${usernames}"
+            "content": "**相关人员：** ${usernames} ${at_markdown}"
           }
         },
         {
@@ -145,10 +145,7 @@
             }
           ]
         }
-      ],
-      "i18n_elements": {
-        "zh_cn": "${at_tags}"
-      }
+      ]
     }
   }
 }
