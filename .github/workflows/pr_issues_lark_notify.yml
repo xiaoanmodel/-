@@ -61,7 +61,7 @@ jobs:
                   
                   // 去重
                   const uniqueMentions = [...new Set(mentions)];
-                  return JSON.stringify(uniqueMentions);
+                  return uniqueMentions;  // 直接返回数组，不用JSON.stringify
 
             - name: Generate at elements
               id: generate_at
@@ -76,7 +76,8 @@ jobs:
                   const mappingContent = Buffer.from(mappingBase64, 'base64').toString('utf-8');
                   const mapping = yaml.load(mappingContent);
                   
-                  const mentions = JSON.parse('${{ steps.extract_mentions.outputs.result }}');
+                  // 不需要解析JSON，直接使用结果
+                  const mentions = ${{ toJSON(steps.extract_mentions.outputs.result) }};
                   const atElements = [];
                   
                   // 为每个提及的用户创建@标签
@@ -99,7 +100,7 @@ jobs:
                     });
                   }
                   
-                  return JSON.stringify(atElements);
+                  return atElements;  // 直接返回数组，不用JSON.stringify
 
             - name: Send Notification
               uses: northwang-lucky/chatbot-webhook-client@v1.1.1
@@ -247,7 +248,7 @@ jobs:
                                                 "content": "**相关人员：**"
                                             }
                                         },
-                                        ${{ steps.generate_at.outputs.result }},
+                                        ${{ toJSON(steps.generate_at.outputs.result) }},
                                         {
                                             "tag": "button",
                                             "text": {
