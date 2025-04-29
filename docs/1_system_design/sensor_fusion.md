@@ -33,7 +33,7 @@ UserComment: ASCIIYaw:185.22156,Pitch:-31.785954957370578,Roll:4.045600990797533
 
 ### （二）欧拉角Pitch、Roll、Yaw
 
-![](../4_appendices/figures/3angle.png)
+![ohhhhhhhhhhhhhhhhhhhhhhhhhhhhhh](../4_appendices/figures/3angle.png)
 
 #### 1. **理解三轴角度的含义**
 
@@ -242,7 +242,7 @@ def camera_to_world_coordinates(self, attr_name):
 ### 6. PCA分析
 
 使用 **PCA（主成分分析）** 算法对点云数据进行分析，找到点云的主要方向。
-![](../4_appendices/figures/PCA.png)
+![hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh](../4_appendices/figures/PCA.png)
 ```python
         # 通过PCA找到主要方向
         from sklearn.decomposition import PCA
