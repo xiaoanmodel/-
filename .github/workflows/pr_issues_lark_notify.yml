@@ -140,6 +140,7 @@ jobs:
                   console.log("处理后的提及列表:", JSON.stringify(mentions));
                   
                   const atElements = [];
+                  let atMarkdown = ''; // 新的Markdown格式at标签
                   
                   // 为每个提及的用户创建@标签
                   for (let i = 0; i < mentions.length; i++) {
@@ -147,11 +148,14 @@ jobs:
                     console.log("处理用户:", username);
                     if (mapping.mapping && mapping.mapping[username]) {
                       console.log("找到映射:", username, "->", mapping.mapping[username]);
+                      // 兼容旧格式
                       atElements.push({
                         tag: "at",
                         user_id: mapping.mapping[username],
                         user_name: username
                       });
+                      // 新的Markdown格式
+                      atMarkdown += `<at id=${mapping.mapping[username]}></at> `;
                     } else {
                       console.log("未找到用户映射:", username);
                     }
@@ -160,20 +164,25 @@ jobs:
                   // 如果没有找到映射的用户，则@所有人
                   if (atElements.length === 0) {
                     console.log("未找到映射用户，添加@所有人");
+                    // 兼容旧格式
                     atElements.push({
                       tag: "at",
                       user_id: mapping.all || "all",
                       user_name: "所有人"
                     });
+                    // 新的Markdown格式
+                    atMarkdown = '<at id=all></at>';
                   }
                   
                   console.log("最终@元素:", JSON.stringify(atElements));
+                  console.log("最终@Markdown:", atMarkdown);
                   console.log("==============================");
                   
                   // 返回@标签及用户名，用于飞书消息模板
                   return {
                     atTags: atElements,
-                    userNames: atElements.map(item => item.user_name).join(', ')
+                    userNames: atElements.map(item => item.user_name).join(', '),
+                    atMarkdown: atMarkdown // 新的Markdown格式
                   };
                 result-encoding: json  # 指定结果编码为JSON
 
@@ -203,6 +212,7 @@ jobs:
                       "base_ref": "${{github.event.pull_request.base.ref}}",
                       "html_url": "${{ github.event.pull_request.html_url }}",
                       "usernames": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).userNames) }},
-                      "at_tags": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).atTags) }}
+                      "at_tags": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).atTags) }},
+                      "at_markdown": ${{ toJSON(fromJSON(steps.generate_at.outputs.result).atMarkdown) }}
                     }
                   github-token: ${{ secrets.GITHUB_TOKEN }}
