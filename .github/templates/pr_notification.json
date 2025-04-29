@@ -1,0 +1,161 @@
+{
+  "msg_type": "interactive",
+  "card": {
+    "schema": "2.0",
+    "header": {
+      "title": {
+        "tag": "plain_text",
+        "content": "🔄 Pull Request Update"
+      },
+      "template": "green"
+    },
+    "body": {
+      "direction": "vertical",
+      "elements": [
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "**仓库：**"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "${repository_name}"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "**标题：**"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "${pr_title}"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "**状态：**"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "${pr_state}"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "**操作：**"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "${action}"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "**作者：**"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "${user_login}"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "**触发者：**"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "${actor}"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "**时间：**"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "${updated_at}"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "**内容：**"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "${pr_body}"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "**从：** ${head_ref} **分支** 到 ${base_ref} **分支**"
+          }
+        },
+        {
+          "tag": "div",
+          "text": {
+            "tag": "lark_md",
+            "content": "**相关人员：** ${usernames}"
+          }
+        },
+        {
+          "tag": "button",
+          "text": {
+            "tag": "plain_text",
+            "content": "👉 查看详情"
+          },
+          "type": "primary",
+          "behaviors": [
+            {
+              "type": "open_url",
+              "default_url": "${html_url}"
+            }
+          ]
+        }
+      ],
+      "i18n_elements": {
+        "zh_cn": "${at_tags}"
+      }
+    }
+  }
+}
