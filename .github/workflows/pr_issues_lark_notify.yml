@@ -245,5 +245,5 @@ jobs:
                   app: Lark
                   webhook: ${{ secrets.LARK_WEBHOOK }}
                   template: file://.github/templates/pr_notification.json
-                  params: ${{ toJSON(steps.prepare_params.outputs.result) }}
+                  params: ${{steps.prepare_params.outputs.result}}
                   github-token: ${{ secrets.GITHUB_TOKEN }}
