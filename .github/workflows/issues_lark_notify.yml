@@ -223,7 +223,7 @@ jobs:
           result-encoding: json
 
       - name: Send Notification
-        uses: sanchuanhehe/chatbot-webhook-client@v1.1.2
+        uses: sanchuanhehe/chatbot-webhook-client@latest
         with:
           app: Lark
           webhook: ${{ secrets.LARK_WEBHOOK }}
