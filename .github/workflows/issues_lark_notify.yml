@@ -2,7 +2,9 @@ name: Issues Lark Notify
 
 on:
   issues:
-    types: [opened, edited, reopened, closed, deleted]
+    types: [opened, edited, reopened, closed, deleted ,assigned, unassigned, labeled, unlabeled]
+  issue_comment:
+    types: [created, edited, deleted]
 
 jobs:
   notify:
