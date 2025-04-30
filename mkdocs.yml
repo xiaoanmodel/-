@@ -12,6 +12,10 @@ nav:
           - 研究进展/文献综述: 0_project_overview/related_work.md
           - 明确提出研究问题: 0_project_overview/problem_statement.md
           - 创新点总览: 0_project_overview/contribution_summary.md
+    - 部署环境:
+          - 环境部署概述: 0_environment_setup/overview.md
+          - 硬件环境: 0_environment_setup/hardware.md
+          - 软件环境: 0_environment_setup/software.md
     - 系统设计:
           - 系统架构图与模块功能说明: 1_system_design/architecture.md
           - 鸿蒙客户端设计: 1_system_design/client_design.md
