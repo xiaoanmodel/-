@@ -1,10 +1,38 @@
 site_name: 小安组文档库
 nav:
-  - Home: index.md
-  - Contributors:
-      - Contributors: CONTRIBUTORS.md
-  - Contributing:
-      - Contributing: CONTRIBUTING.md
-      - GitHub Workflow:
-          - GitHub Workflow: github_workflow.md
+    - Home: index.md
+    - Contributors:
+          - Contributors: CONTRIBUTORS.md
+    - Contributing:
+          - Contributing: CONTRIBUTING.md
+          - GitHub Workflow:
+                - GitHub Workflow: github_workflow.md
+    - 项目概述:
+          - 研究背景与动机: 0_project_overview/background.md
+          - 研究进展/文献综述: 0_project_overview/related_work.md
+          - 明确提出研究问题: 0_project_overview/problem_statement.md
+          - 创新点总览: 0_project_overview/contribution_summary.md
+    - 系统设计:
+          - 系统架构图与模块功能说明: 1_system_design/architecture.md
+          - 鸿蒙客户端设计: 1_system_design/client_design.md
+          - Flask 服务端设计: 1_system_design/server_design.md
+          - 多模态数据融合与PCA分析: 1_system_design/sensor_fusion.md
+          - 核心算法说明: 1_system_design/algorithms.md
+    - 系统实现细节:
+          - 无硬件改造的设计考量: 2_implementation/hardware_assumptions.md
+          - 单目深度估计实现: 2_implementation/monocular_depth.md
+          - Mask RCNN替代vLLM的具体实现: 2_implementation/instance_segmentation.md
+          - 点云构建逻辑: 2_implementation/pointcloud_generation.md
+          - 端到端推理流程说明: 2_implementation/inference_pipeline.md
+    - 实验设计与评估:
+          - 实验方案总览: 3_experiments/experiment_plan.md
+          - 自建数据集说明: 3_experiments/dataset_description.md
+          - 指标定义与评估标准: 3_experiments/evaluation_metrics.md
+          - 对标方案比较分析: 3_experiments/baseline_comparison.md
+          - 实验结果与分析: 3_experiments/result_analysis.md
+    - 附录:
+          - 名词术语表: 4_appendices/glossary.md
+          - 核心参考文献: 4_appendices/references.bib
+          - 插图: 4_appendices/figures/
+          - 常见答辩/开题问题汇总: 4_appendices/questions_answered.md
 theme: readthedocs

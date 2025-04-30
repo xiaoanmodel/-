@@ -220,8 +220,6 @@ jobs:
                   };
                   
                   // 确保Markdown格式的at标签是有效的JSON字符串
-                  // 将尖括号和引号等特殊字符进行转义
-                  params.at_markdown = params.at_markdown.replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
                   
                   console.log("准备的参数:", JSON.stringify(params));
                   
@@ -240,7 +238,7 @@ jobs:
                 result-encoding: json
 
             - name: Send Notification
-              uses: northwang-lucky/chatbot-webhook-client@v1.1.1
+              uses: sanchuanhehe/chatbot-webhook-client@latest
               with:
                   app: Lark
                   webhook: ${{ secrets.LARK_WEBHOOK }}
