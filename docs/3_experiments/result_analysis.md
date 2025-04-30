@@ -3,11 +3,11 @@
 ### 实验数据分布图
 
 项目经过500次实验,得到了对应实验数据分布图，图示如下：  
-![方向角平均绝对误差分布图](..\4_appendices\figures\MAE.png)  
+![方向角平均绝对误差分布图](../4_appendices/figures/MAE.png)  
 
 - **方向角平均绝对误差分布图**
 
-![平均单帧处理时延分布图](..\4_appendices\figures\latency.png)  
+![平均单帧处理时延分布图](../4_appendices/figures/latency.png)  
 
 - **平均单帧处理时延分布图**
 
