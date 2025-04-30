@@ -1,45 +1,23 @@
-# Welcome to MkDocs
+# 项目组介绍与工作总览
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+## 项目概述
 
-## Commands
+本系统旨在通过无硬件改造的方式，实现智能手机对环境的三维场景理解。主要利用单目深度估计和实例分割等计算机视觉技术，结合鸿蒙原生应用开发，构建了一套轻量级的移动端三维感知系统。
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+## 核心工作
 
-## Project layout
+1. 基于单目深度估计的场景三维重建
+2. 轻量级实例分割的物体识别系统
+3. 多模态数据融合的环境感知框架
+4. 鸿蒙原生应用的高性能实现
 
-```
-docs/
-├── README.md                        # 文档首页，项目简介与导航
-├── 0_project_overview/             # 项目概述
-│   ├── background.md               # 研究背景与动机（问题1）
-│   ├── related_work.md             # 研究进展/文献综述（问题2）
-│   ├── problem_statement.md        # 明确提出研究问题
-│   └── contribution_summary.md     # 创新点总览（问题4）
-├── 1_system_design/                # 系统设计
-│   ├── architecture.md             # 系统架构图与模块功能说明
-│   ├── client_design.md            # 鸿蒙客户端设计
-│   ├── server_design.md            # Flask 服务端设计
-│   ├── sensor_fusion.md            # 多模态数据融合与PCA分析
-│   └── algorithms.md               # 核心算法说明（问题3）
-├── 2_implementation/              # 系统实现细节
-│   ├── hardware_assumptions.md     # 无硬件改造的设计考量
-│   ├── monocular_depth.md          # 单目深度估计实现
-│   ├── instance_segmentation.md    # Mask RCNN替代vLLM的具体实现
-│   ├── pointcloud_generation.md    # 点云构建逻辑
-│   └── inference_pipeline.md       # 端到端推理流程说明
-├── 3_experiments/                 # 实验设计与评估
-│   ├── experiment_plan.md          # 实验方案总览（问题5）
-│   ├── dataset_description.md      # 自建数据集说明
-│   ├── evaluation_metrics.md       # 指标定义与评估标准
-│   ├── baseline_comparison.md      # 对标方案比较分析
-│   └── result_analysis.md          # 实验结果与分析（问题6）
-├── 4_appendices/                  # 附录
-│   ├── glossary.md                 # 名词术语表
-│   ├── references.bib              # 核心参考文献BibTeX
-│   ├── figures/                    # 所有插图（架构图、实验图等）
-│   └── questions_answered.md      # 常见答辩/开题问题汇总
-```
+## 文档导航
+
+- 项目概述：研究背景、相关工作及创新点
+- 系统设计：整体架构及核心模块设计
+- 实现细节：关键技术实现方案
+- 实验评估：系统性能测试与分析
+
+## 仓库结构
+
+本文档采用 MkDocs 构建，详细记录了项目的设计、实现与评估全过程。参考左侧目录导航浏览具体内容。
