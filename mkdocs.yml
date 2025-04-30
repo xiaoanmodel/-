@@ -36,5 +36,8 @@ nav:
           - 插图: 4_appendices/figures/
           - 常见答辩/开题问题汇总: 4_appendices/questions_answered.md
 markdown_extensions:
-    - mathjax
+    - pymdownx.arithmatex
+
+extra_javascript:
+    - https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML
 theme: readthedocs
