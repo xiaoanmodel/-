@@ -21,11 +21,6 @@ jobs:
         with:
           python-version: "3.x"
           cache: 'pip'
-          
-      - name: Install dependencies
-        run: |
-          pip install mkdocs-material
-          pip install mkdocs-mermaid2-plugin[test]
 
       - name: Build and Deploy
         run: |
