@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>端到端推理流程说明 - 小安组文档库</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u7aef\u5230\u7aef\u63a8\u7406\u6d41\u7a0b\u8bf4\u660e";
+        var mkdocs_page_input_path = "2_implementation/inference_pipeline.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> 小安组文档库
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributors</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTORS/">Contributors</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributing</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING/">Contributing</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >GitHub Workflow</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../github_workflow/">GitHub Workflow</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">项目概述</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/background/">研究背景与动机</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/related_work/">研究进展/文献综述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/problem_statement/">明确提出研究问题</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/contribution_summary/">创新点总览</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">部署环境</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/overview/">环境部署概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/hardware/">硬件环境</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/software/">软件环境</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">系统设计</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/architecture/">系统架构图与模块功能说明</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/client_design/">鸿蒙客户端设计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/server_design/">Flask 服务端设计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/sensor_fusion/">多模态数据融合与PCA分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/algorithms/">核心算法说明</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">系统实现细节</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../hardware_assumptions/">无硬件改造的设计考量</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../monocular_depth/">单目深度估计实现</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../instance_segmentation/">Mask RCNN替代vLLM的具体实现</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pointcloud_generation/">点云构建逻辑</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">端到端推理流程说明</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">算法框架概述</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">实验设计与评估</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/experiment_plan/">实验方案总览</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/dataset_description/">自建数据集说明</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/evaluation_metrics/">指标定义与评估标准</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/baseline_comparison/">对标方案比较分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/result_analysis/">实验结果与分析</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">附录</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/glossary/">名词术语表</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/references.bib">核心参考文献</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../4_appendices/figures/">插图</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/questions_answered/">常见答辩/开题问题汇总</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">小安组文档库</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">系统实现细节</li>
+      <li class="breadcrumb-item active">端到端推理流程说明</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">端到端推理流程说明</h1>
+<p>本文档主要介绍获取共享电动车的方向信息的端到端推理流程。</p>
+<h2 id="_2">算法框架概述</h2>
+<p><img alt="pipeline" src="../../4_appendices/figures/pipeline.png" /></p>
+<ol>
+<li>
+<p>服务器首先接受用户上传的数据，解析方位角信息</p>
+</li>
+<li>
+<p>服务器从两个环节对数据进行处理：</p>
+</li>
+<li>
+<p>单目深度估计与三维度重建</p>
+</li>
+</ol>
+<p>基于depth_anything_v2模型，进行单目深度估计，生成用户上传图片的深度图，获取共享电单车的三维坐标信息。然后使用open3d库进行三维重建，生成图片的三维点云模型。</p>
+<ul>
+<li>实例分割优化</li>
+</ul>
+<p>为了能够准确分析共享单车道朝向，需要对共享电单车进行分割。我们基于城市共享电单车数据集训练了专用的Mask R-CNN深度学习网络，用于提取用户上传图片的实例分割掩膜。</p>
+<ol>
+<li>PCA主方向计算</li>
+</ol>
+<p>基于图片的三维点云模型和共享电单车的实例分割掩膜，我们可以得到共享电单车的点云模型。然后使用PCA算法计算主方向，并将其作为共享电单车的朝向信息。</p>
+<ol>
+<li>
+<p>方向换算</p>
+</li>
+<li>
+<p>封装与存储结果</p>
+</li>
+</ol>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../pointcloud_generation/" class="btn btn-neutral float-left" title="点云构建逻辑"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../3_experiments/experiment_plan/" class="btn btn-neutral float-right" title="实验方案总览">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../pointcloud_generation/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../../3_experiments/experiment_plan/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

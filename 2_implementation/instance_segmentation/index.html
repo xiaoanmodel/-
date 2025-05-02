@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Mask RCNN替代vLLM的具体实现 - 小安组文档库</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Mask RCNN\u66ff\u4ee3vLLM\u7684\u5177\u4f53\u5b9e\u73b0";
+        var mkdocs_page_input_path = "2_implementation/instance_segmentation.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> 小安组文档库
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributors</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTORS/">Contributors</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributing</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING/">Contributing</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >GitHub Workflow</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../github_workflow/">GitHub Workflow</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">项目概述</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/background/">研究背景与动机</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/related_work/">研究进展/文献综述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/problem_statement/">明确提出研究问题</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/contribution_summary/">创新点总览</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">部署环境</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/overview/">环境部署概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/hardware/">硬件环境</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/software/">软件环境</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">系统设计</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/architecture/">系统架构图与模块功能说明</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/client_design/">鸿蒙客户端设计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/server_design/">Flask 服务端设计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/sensor_fusion/">多模态数据融合与PCA分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/algorithms/">核心算法说明</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">系统实现细节</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../hardware_assumptions/">无硬件改造的设计考量</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../monocular_depth/">单目深度估计实现</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Mask RCNN替代vLLM的具体实现</a>
+    <ul class="current">
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pointcloud_generation/">点云构建逻辑</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../inference_pipeline/">端到端推理流程说明</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">实验设计与评估</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/experiment_plan/">实验方案总览</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/dataset_description/">自建数据集说明</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/evaluation_metrics/">指标定义与评估标准</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/baseline_comparison/">对标方案比较分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/result_analysis/">实验结果与分析</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">附录</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/glossary/">名词术语表</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/references.bib">核心参考文献</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../4_appendices/figures/">插图</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/questions_answered/">常见答辩/开题问题汇总</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">小安组文档库</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">系统实现细节</li>
+      <li class="breadcrumb-item active">Mask RCNN替代vLLM的具体实现</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="mask_rcnnvllm">为何使用MASK_RCNN替代vLLM完成实例分割任务</h1>
+<ol>
+<li>应用领域不同：Mask R-CNN 是一种专用于目标检测和实例分割的两阶段目标检测算法。vLLM（Very Large Language Model）则是一种语言模型，主要用于自然语言处理任务，例如文本生成、问答系统、机器翻译等。</li>
+<li>能力不同：Mask R-CNN通过引入分割分支来对每个候选区域进行像素级别的分类，从而实现高质量的实例分割结果，而vLLM只能完成目标检测的任务。</li>
+<li>速度不同：Mask R-CNN的训练与推理速度比vLLM更快。</li>
+<li>算力要求不同：Mask R-CNN的计算量比vLLM更小，可以在单个GPU上进行实时推理。</li>
+</ol>
+<h1 id="mask_rcnn">MASK_RCNN的具体实现</h1>
+<h2 id="r-cnn">基于R-CNN网络</h2>
+<p>R-CNN（Regions with CNN features）是目标检测领域的一个重要里程碑，由 Ross Girshick 等人在2014年提出。它首次将深度学习的强大特征提取能力应用于目标检测任务，并取得了显著的性能提升。</p>
+<p><img alt="RCNN" src="../../4_appendices/figures/RCNN.png" /></p>
+<p>R-CNN 方法在处理图像时，首先生成一系列可能包含对象的区域（候选区域），然后对每个区域独立地使用卷积神经网络（CNN）提取特征，最后使用支持向量机（SVM）进行分类，并通过回归器调整边界框的位置。</p>
+<h2 id="fast-r-cnn">Fast R-CNN：提高效率与准确性</h2>
+<p>Fast R-CNN 基于R-CNN进行了以下优化。</p>
+<p><img alt="fast_rcnn" src="../../4_appendices/figures/fast_rcnn.png" /></p>
+<ul>
+<li>共享计算：与原始 R-CNN 不同，Fast R-CNN 首先在整个图像上运行卷积操作以提取特征图，而不是为每个候选区域单独提取特征。这大大减少了冗余计算。</li>
+<li>ROI 池化层：引入了感兴趣区域（Region of Interest, ROI）池化层，该层将不同大小的候选区域映射到固定大小的特征向量，以便后续全连接层能够处理。</li>
+<li>多任务损失：Fast R-CNN 同时训练分类器和边界框回归器，使得整个模型可以通过单一的前向传播过程同时完成目标分类和定位。</li>
+</ul>
+<p>Faster R-CNN 在 Fast R-CNN 的基础上通过以下改进进一步提升了效率和性能。</p>
+<p><img alt="faster_rcnn" src="../../4_appendices/figures/faster_rcnn.png" /></p>
+<ul>
+<li>区域提议网络（Region Proposal Network, RPN）：这是 Faster R-CNN 最重要的创新点。与之前的 R-CNN 和 Fast R-CNN 使用选择性搜索等外部工具来生成候选区域不同，Faster R-CNN 引入了一个深度卷积网络（即 RPN），该网络可以与用于分类和回归的网络共享卷积特征层。这意味着候选区域的生成现在也可以通过学习得到，并且可以直接利用已经计算好的特征图，极大地提高了效率。</li>
+<li>共享卷积特征：Faster R-CNN 通过让 RPN 和后续的目标分类、边界框回归任务共享卷积层的输出，进一步减少了冗余计算。这种设计不仅加速了整个流程，也使得模型对输入图像的空间信息有了更好的理解。</li>
+</ul>
+<h2 id="mask-r-cnn">引入分割分支,实现Mask R-CNN</h2>
+<p>Mask R-CNN 是在 Fast R-CNN 和 Faster R-CNN 基础上的进一步发展。</p>
+<p><img alt="mask_rcnn" src="../../4_appendices/figures/mask_rcnn.png" /></p>
+<p>Faster R-CNN 引入了一个区域提议网络（Region Proposal Network, RPN），它允许模型自己学习如何提出候选区域，从而替代了外部的选择性搜索方法。在此基础上，Mask R-CNN 添加了一个用于预测每个实例掩膜的分支，因此除了进行分类和边界框回归之外，还能实现像素级别的分割，即实例分割。</p>
+<ul>
+<li>实例分割：Mask R-CNN 在原有的分类和回归分支的基础上增加了一个并行的掩膜预测分支，用于输出每个目标实例的二值掩膜。</li>
+<li>RoIAlign 层：为了改善 ROI 池化层在处理不同尺度和旋转不变性的局限性，Mask R-CNN 使用了 RoIAlign 层。它更精确地保留了空间信息，对于生成高质量的掩膜至关重要。</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../monocular_depth/" class="btn btn-neutral float-left" title="单目深度估计实现"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../pointcloud_generation/" class="btn btn-neutral float-right" title="点云构建逻辑">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../monocular_depth/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../pointcloud_generation/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

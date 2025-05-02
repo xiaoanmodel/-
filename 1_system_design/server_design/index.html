@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Flask 服务端设计 - 小安组文档库</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Flask \u670d\u52a1\u7aef\u8bbe\u8ba1";
+        var mkdocs_page_input_path = "1_system_design/server_design.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> 小安组文档库
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributors</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTORS/">Contributors</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributing</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING/">Contributing</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >GitHub Workflow</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../github_workflow/">GitHub Workflow</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">项目概述</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/background/">研究背景与动机</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/related_work/">研究进展/文献综述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/problem_statement/">明确提出研究问题</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/contribution_summary/">创新点总览</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">部署环境</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/overview/">环境部署概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/hardware/">硬件环境</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/software/">软件环境</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">系统设计</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../architecture/">系统架构图与模块功能说明</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../client_design/">鸿蒙客户端设计</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Flask 服务端设计</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">一、概述</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mask-server">二、Mask Server</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_2">（一）基本信息</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_3">（二）接口列表</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1">1. 健康检查接口</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2">2. 图像掩膜预测接口</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#main-server">三、Main Server</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#_4">（一）基本信息</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_5">（二）接口列表</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1_2">1. 上传图像接口</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2_2">2. 查询处理状态接口</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_6">（三）处理步骤设计</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_7">初始化数据库</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_8">上传图像</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_9">异步处理图像</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../sensor_fusion/">多模态数据融合与PCA分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../algorithms/">核心算法说明</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">系统实现细节</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../2_implementation/hardware_assumptions/">无硬件改造的设计考量</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../2_implementation/monocular_depth/">单目深度估计实现</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../2_implementation/instance_segmentation/">Mask RCNN替代vLLM的具体实现</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../2_implementation/pointcloud_generation/">点云构建逻辑</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../2_implementation/inference_pipeline/">端到端推理流程说明</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">实验设计与评估</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/experiment_plan/">实验方案总览</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/dataset_description/">自建数据集说明</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/evaluation_metrics/">指标定义与评估标准</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/baseline_comparison/">对标方案比较分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/result_analysis/">实验结果与分析</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">附录</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/glossary/">名词术语表</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/references.bib">核心参考文献</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../4_appendices/figures/">插图</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/questions_answered/">常见答辩/开题问题汇总</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">小安组文档库</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">系统设计</li>
+      <li class="breadcrumb-item active">Flask 服务端设计</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="flask">Flask服务端设计</h1>
+<h2 id="_1">一、概述</h2>
+<p>本项目采用Flask框架进行docker之间的通信与接口调用，主要实现了图像上传、图像处理、状态查询等功能。整个服务由多个接口组成，支持图像上传、处理结果查询以及图像处理状态的管理。以下是整体交互流程图：
+<img alt="时序图" src="../../4_appendices/figures/whiteboard_exported_image.png" /></p>
+<h2 id="mask-server">二、Mask Server</h2>
+<h3 id="_2">（一）基本信息</h3>
+<ul>
+<li><strong>基础URL</strong>: <a href="http://服务器IP:5000">http://服务器IP:5000</a></li>
+<li><strong>内容类型</strong>: application/json 或 multipart/form-data</li>
+</ul>
+<h3 id="_3">（二）接口列表</h3>
+<h4 id="1">1. 健康检查接口</h4>
+<ul>
+<li><strong>请求方式</strong>: <code>GET</code></li>
+<li><strong>路径</strong>: <code>/health</code></li>
+<li><strong>描述</strong>: 用于检查服务是否正常运行</li>
+<li>
+<p><strong>响应示例</strong>:</p>
+<p><code>json
+{
+  "status": "ok"
+}</code></p>
+</li>
+</ul>
+<h4 id="2">2. 图像掩膜预测接口</h4>
+<ul>
+<li><strong>请求方式</strong>: <code>POST</code></li>
+<li><strong>路径</strong>: <code>/predict</code></li>
+<li><strong>描述</strong>: 接收图片，使用<code>Mask R-CNN</code>模型进行实例分割，返回分割掩膜信息</li>
+</ul>
+<h5 id="1_1">（1）请求格式</h5>
+<p>支持两种提交方式：</p>
+<ol>
+<li>
+<p>表单提交 (multipart/form-data):</p>
+</li>
+<li>
+<p><strong>参数名</strong>: file</p>
+</li>
+<li><strong>参数类型</strong>: 图片文件</li>
+<li><strong>请求体格式</strong>:</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;file&quot;: &quot;二进制编码的图片数据&quot;
+}
+</code></pre>
+<ul>
+<li><strong>示例代码 (Python)</strong>:</li>
+</ul>
+<pre><code class="language-python">import requests
+
+url = &quot;http://服务器IP:5000/predict&quot;
+files = {&quot;file&quot;: open(&quot;path/to/image.jpg&quot;, &quot;rb&quot;)}
+response = requests.post(url, files=files)
+print(response.json())
+</code></pre>
+<ol>
+<li>
+<p>JSON提交 (application/json):</p>
+</li>
+<li>
+<p><strong>参数名</strong>: image</p>
+</li>
+<li><strong>参数类型</strong>: Base64编码的图片数据</li>
+<li><strong>请求体格式</strong>:</li>
+</ol>
+<pre><code class="language-json">{
+  &quot;image&quot;: &quot;Base64编码的图片数据&quot;
+}
+</code></pre>
+<ul>
+<li><strong>示例代码 (Python)</strong>:</li>
+</ul>
+<pre><code class="language-python">import requests
+import base64
+
+url = &quot;http://服务器IP:5000/predict&quot;
+with open(&quot;path/to/image.jpg&quot;, &quot;rb&quot;) as image_file:
+    encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+
+payload = {&quot;image&quot;: encoded_string}
+headers = {&quot;Content-Type&quot;: &quot;application/json&quot;}
+response = requests.post(url, json=payload, headers=headers)
+print(response.json())
+</code></pre>
+<h5 id="2_1">（2）响应格式</h5>
+<ul>
+<li>成功响应</li>
+</ul>
+<pre><code class="language-python">{
+  &quot;status&quot;: &quot;success&quot;,
+  &quot;count&quot;: 2,  // 检测到的对象数量
+  &quot;masks&quot;: [
+    {
+      &quot;mask_id&quot;: 0,
+      &quot;mask_rle&quot;: {
+        &quot;counts&quot;: &quot;Base64编码的RLE压缩掩膜数据&quot;,
+        &quot;size&quot;: [高度, 宽度]  // 掩膜尺寸
+      }
+    },
+    {
+      &quot;mask_id&quot;: 1,
+      &quot;mask_rle&quot;: {
+        &quot;counts&quot;: &quot;Base64编码的RLE压缩掩膜数据&quot;,
+        &quot;size&quot;: [高度, 宽度]  // 掩膜尺寸
+      }
+    }
+  ]
+}
+</code></pre>
+<ul>
+<li>响应失败</li>
+</ul>
+<pre><code class="language-python">{
+  &quot;error&quot;: &quot;错误描述信息&quot;
+}
+</code></pre>
+<h2 id="main-server">三、Main Server</h2>
+<h3 id="_4">（一）基本信息</h3>
+<ul>
+<li><strong>基础URL</strong>: <a href="http://服务器IP:11470">http://服务器IP:11470</a></li>
+<li><strong>内容类型</strong>: application/json</li>
+<li><strong>文件上传目录</strong>: <code>uploads</code></li>
+<li><strong>数据库</strong>: SQLite（存储图像处理记录）</li>
+</ul>
+<h3 id="_5">（二）接口列表</h3>
+<h4 id="1_2">1. 上传图像接口</h4>
+<ul>
+<li><strong>请求方式</strong>: POST</li>
+<li><strong>路径</strong>: <code>/upload</code></li>
+<li><strong>描述</strong>: 用于上传图像，并启动后台异步处理任务</li>
+<li><strong>请求格式</strong>: JSON</li>
+</ul>
+<pre><code class="language-json">   {&quot;image&quot;: &quot;Base64编码的图像数据&quot;}
+</code></pre>
+<ul>
+<li><strong>响应示例</strong>:</li>
+</ul>
+<p><code>json
+  {
+    "message": "success upload image",
+    "filename": "image.jpg"
+  }</code></p>
+<ul>
+<li>
+<p><strong>说明</strong>:</p>
+</li>
+<li>
+<p>将Base64编码的图像数据传递到image字段中</p>
+</li>
+<li>
+<p>后端将异步处理图像并保存到本地uploads目录</p>
+</li>
+<li>
+<p>初始处理状态为processing，处理结果会更新为completed或error，并存储在SQLite数据库中。</p>
+</li>
+</ul>
+<h4 id="2_2">2. 查询处理状态接口</h4>
+<ul>
+<li>
+<p><strong>请求方式</strong>: GET</p>
+</li>
+<li>
+<p><strong>路径</strong>: /status/<filename></p>
+</li>
+<li>
+<p><strong>描述</strong>: 查询指定图像的处理状态</p>
+</li>
+<li>
+<p><strong>请求格式</strong>: URL参数 <code>&lt;filename&gt;</code>: 图像文件名（例如 image.jpg）</p>
+</li>
+<li><strong>响应示例</strong>:</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;status&quot;: &quot;completed&quot;,
+  &quot;filename&quot;: &quot;image_20230515_123456.jpg&quot;,
+  &quot;degree&quot;: 0.95
+}
+</code></pre>
+<p><strong>status</strong>: 图像处理状态，processing（处理中）、completed（已完成）、error（出错）</p>
+<p><strong>degree</strong>: 处理完成后的度数（当status为completed时返回）</p>
+<ul>
+<li><strong>错误响应示例</strong>:</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;error&quot;: &quot;找不到该文件的处理记录&quot;
+}
+</code></pre>
+<h3 id="_6">（三）处理步骤设计</h3>
+<h4 id="_7">初始化数据库</h4>
+<p>服务启动时，会初始化一个SQLite数据库（<code>image_process.db</code>），并在其中创建一个<code>image_results</code>表，用于存储图像的处理状态和度数信息。表结构如下：</p>
+<pre><code class="language-sql">CREATE TABLE IF NOT EXISTS image_results
+(
+    filename TEXT PRIMARY KEY, 
+    status TEXT,
+    degree REAL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+</code></pre>
+<h4 id="_8">上传图像</h4>
+<p>用户通过/upload接口上传图像时，图像数据会被解码并保存为JPEG文件。然后，上传信息（包括图像文件名和处理状态）将被存入数据库。处理图像的任务会在后台异步执行。</p>
+<h4 id="_9">异步处理图像</h4>
+<p>上传图像后，后台会异步执行以下任务：</p>
+<ul>
+<li>
+<p>通过prase_image函数处理图像并保存到输出目录</p>
+</li>
+<li>
+<p>使用prase_pca函数分析处理后的图像，返回一个度数值</p>
+</li>
+<li>
+<p>更新数据库中的状态为completed，并存储分析的degree值。如果发生错误，则更新状态为error。</p>
+</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../client_design/" class="btn btn-neutral float-left" title="鸿蒙客户端设计"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../sensor_fusion/" class="btn btn-neutral float-right" title="多模态数据融合与PCA分析">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../client_design/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../sensor_fusion/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

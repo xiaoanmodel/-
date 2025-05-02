@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>单目深度估计实现 - 小安组文档库</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u5355\u76ee\u6df1\u5ea6\u4f30\u8ba1\u5b9e\u73b0";
+        var mkdocs_page_input_path = "2_implementation/monocular_depth.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> 小安组文档库
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributors</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTORS/">Contributors</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributing</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING/">Contributing</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >GitHub Workflow</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../github_workflow/">GitHub Workflow</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">项目概述</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/background/">研究背景与动机</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/related_work/">研究进展/文献综述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/problem_statement/">明确提出研究问题</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/contribution_summary/">创新点总览</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">部署环境</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/overview/">环境部署概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/hardware/">硬件环境</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/software/">软件环境</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">系统设计</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/architecture/">系统架构图与模块功能说明</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/client_design/">鸿蒙客户端设计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/server_design/">Flask 服务端设计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/sensor_fusion/">多模态数据融合与PCA分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../1_system_design/algorithms/">核心算法说明</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">系统实现细节</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../hardware_assumptions/">无硬件改造的设计考量</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">单目深度估计实现</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_2">单目深度估计</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#depthanything">DepthAnything</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#depth-anything-v2">Depth Anything V2</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">本项目的应用</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../instance_segmentation/">Mask RCNN替代vLLM的具体实现</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../pointcloud_generation/">点云构建逻辑</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../inference_pipeline/">端到端推理流程说明</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">实验设计与评估</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/experiment_plan/">实验方案总览</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/dataset_description/">自建数据集说明</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/evaluation_metrics/">指标定义与评估标准</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/baseline_comparison/">对标方案比较分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/result_analysis/">实验结果与分析</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">附录</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/glossary/">名词术语表</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/references.bib">核心参考文献</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../4_appendices/figures/">插图</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/questions_answered/">常见答辩/开题问题汇总</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">小安组文档库</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">系统实现细节</li>
+      <li class="breadcrumb-item active">单目深度估计实现</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="_1">单目深度估计实现</h1>
+<h2 id="_2">单目深度估计</h2>
+<p>单目深度估计（Monocular Depth Estimation, MDE）是一项在计算机视觉领域中非常重要的技术，它旨在从单张图像中恢复出场景的三维结构。这项技术对于机器人导航、自动驾驶汽车、增强现实（AR）和虚拟现实（VR）等应用至关重要。</p>
+<p>本模块基于DepthAnything V2实现单目深度估计</p>
+<h2 id="depthanything">DepthAnything</h2>
+<p>"DepthAnything"是TikTok、香港大学和浙江大学共同研发的一种先进单目深度估计技术。这项技术能够从2D图像中提取深度信息，并将其转换为3D影像。与传统的MDE技术相比，"DepthAnything"在提高深度图质量方面取得了显著进步，这使得它能够更准确地估计场景的深度信息。</p>
+<p><img alt="DepthAnything" src="../../4_appendices/figures/depthanything.png" /></p>
+<p>“Depth Anything”利用带标签和未标记图像进行单目深度估计（MDE）。具体步骤如下：</p>
+<p>学习带标签图像（Learning from Labeled Images）：此步骤中，采用类似于MiDaS的深度值变换与归一化技术，并使用仿射不变损失函数对来自六个公开数据集的150万张带标签图像进行多数据集联合训练，从而建立了一个导师模型T。</p>
+<p>解锁未标记图像的潜力（Unlocking the Potential of Unlabeled Images）：与传统策略不同，这一方法重视通过大规模未标记图像来增强数据覆盖范围。通过从互联网和各种任务的公开数据集中收集，构建了一个既多样又大规模的未标记图像集合。使用导师模型T为这些未标记图像生成伪标签，并结合带标签图像和伪标签图像共同训练一个学生模型S。在训练过程中，应用强烈色彩和空间扭曲以促使学生模型积极探寻更多的视觉信息。</p>
+<p>语义辅助感知（Semantics-Assisted Perception）：为了改进处理深度估计任务的能力，此方法引入了辅助语义分割任务，通过对未标记图像添加语义分割标签，提供高层次的语义信息。特别地，鉴于DINOv2模型在语义相关任务中的出色表现，本方法通过辅助特征对齐损失，将DINOv2模型的强大语义理解能力迁移到深度估计模型中。</p>
+<h2 id="depth-anything-v2">Depth Anything V2</h2>
+<p>Depth Anything V2是一种用于单目深度估计（Monocular Depth Estimation, MDE）的先进方法，代表了在Depth Anything基础上的重大升级。他实现了以下的创新与提升：</p>
+<ul>
+<li>
+<p>提升的细节处理：V2版本在深度预测的细节上进行了优化，能够提供更加精确和细致的深度图，从而提高了对场景理解的准确性。</p>
+</li>
+<li>
+<p>更高的效率与准确性：相比之前的版本或基于其他技术（如Stable Diffusion）的方法，Depth Anything V2展示了显著提高的效率和准确性。它能够在保持甚至提升精度的同时大幅减少计算时间，据称比基于SD的模型快了10倍以上。
+多规模模型支持：为了适应不同的应用场景和需求，研究人员提供了参数量从25M到1.3B不等的多种规模的模型，使得用户可以根据自己的需要选择最适合的模型配置。</p>
+</li>
+</ul>
+<p><img alt="Depth Anything V2" src="../../4_appendices/figures/depthanythingv2.png" /></p>
+<ul>
+<li>改进的训练策略：
+使用合成图像代替标记的真实图像进行训练，以提高训练效率。
+增加教师模型的容量，以便更好地捕捉数据中的复杂模式，并增强模型的泛化能力。
+利用大规模伪标签真实图像作为桥梁，帮助学生模型学习，从而提升模型在未见过的数据上的表现力。
+新的评估基准：为了解决现有测试集存在的多样性和噪声问题，研究团队构建了一个新的评估基准，该基准具有更精确的注释和更多样化的场景，有助于更准确地评估模型性能。
+动和模型驱动相结合：通过结合数据驱动（例如使用大量伪标注的真实图像）和模型驱动（如扩大教师模型的容量）的方法，解决了合成图像带来的泛化挑战，进一步提升了模型的鲁棒性和适用性。</li>
+</ul>
+<h2 id="_3">本项目的应用</h2>
+<p>基于Depth Anything V2的单目深度估计，我们还原出用户拍摄的电单车图片的三维场景，并与实例分割模型协同，实现目标电单车的三维重建。</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../hardware_assumptions/" class="btn btn-neutral float-left" title="无硬件改造的设计考量"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../instance_segmentation/" class="btn btn-neutral float-right" title="Mask RCNN替代vLLM的具体实现">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../hardware_assumptions/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../instance_segmentation/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

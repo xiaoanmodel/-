@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="../../img/favicon.ico" rel="shortcut icon"/>
+<title>核心算法说明 - 小安组文档库</title>
+<link href="../../css/theme.css" rel="stylesheet"/>
+<link href="../../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<script>
+        // Current page data
+        var mkdocs_page_name = "\u6838\u5fc3\u7b97\u6cd5\u8bf4\u660e";
+        var mkdocs_page_input_path = "1_system_design/algorithms.md";
+        var mkdocs_page_url = null;
+      </script>
+<!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="../.."> 小安组文档库
+        </a><div role="search">
+<form action="../../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Contributors</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTORS/">Contributors</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING/">Contributing</a>
+</li>
+<li class="toctree-l1"><a class="reference internal">GitHub Workflow</a>
+<ul>
+<li class="toctree-l2"><a class="reference internal" href="../../github_workflow/">GitHub Workflow</a>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">项目概述</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/background/">研究背景与动机</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/related_work/">研究进展/文献综述</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/problem_statement/">明确提出研究问题</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/contribution_summary/">创新点总览</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">部署环境</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/overview/">环境部署概述</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/hardware/">硬件环境</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/software/">软件环境</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">系统设计</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/">系统架构图与模块功能说明</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../client_design/">鸿蒙客户端设计</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../server_design/">Flask 服务端设计</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../sensor_fusion/">多模态数据融合与PCA分析</a>
+</li>
+<li class="toctree-l1 current"><a class="reference internal current" href="#">核心算法说明</a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#_2">一、单目深度估计算法</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#_3">（一）、算法简介</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_4">（二）、核心原理</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_5">（三）、算法结构详解</a>
+<ul>
+<li class="toctree-l4"><a class="reference internal" href="#1">1. 教师模型训练阶段</a>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#2">2. 无标签图像伪监督阶段</a>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#3-sa">3. 语义辅助任务（SA）</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_6">（四）、损失函数设计</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_7">（五）、优化策略</a>
+<ul>
+<li class="toctree-l4"><a class="reference internal" href="#_8">提升精度</a>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#_9">提升效率</a>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#_10">模型规模多样性</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mask-rcnn">二、Mask RCNN</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#_11">（一）、算法概述</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_12">（二）、网络结构详解</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#_13">（三）网络流程图</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_14">（四）、关键技术细节</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#1-feature-pyramid-networkfpn">1. Feature Pyramid Network（FPN）</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#2-roi-align">2. RoI Align（精度改进）</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#3">3. 多任务损失函数</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_15">（五）、优化方式与改进方向</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#_16">提高精度</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_17">提高速度</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_18">增强泛化能力</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pca">三、PCA分析方法</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#_19">（一）背景简介</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pca_1">（二）PCA 基本原理</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_20">（三）算法流程</a>
+<ul>
+<li class="toctree-l4"><a class="reference internal" href="#1_1">1. 计算均值点</a>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#2_1">2. 中心化点云</a>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#3_1">3. 构建协方差矩阵</a>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#4">4. 特征分解</a>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#5">5. 结果解释</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_21">（四）项目中具体实现</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">系统实现细节</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../2_implementation/hardware_assumptions/">无硬件改造的设计考量</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_implementation/monocular_depth/">单目深度估计实现</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_implementation/instance_segmentation/">Mask RCNN替代vLLM的具体实现</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_implementation/pointcloud_generation/">点云构建逻辑</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_implementation/inference_pipeline/">端到端推理流程说明</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">实验设计与评估</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../3_experiments/experiment_plan/">实验方案总览</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_experiments/dataset_description/">自建数据集说明</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_experiments/evaluation_metrics/">指标定义与评估标准</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_experiments/baseline_comparison/">对标方案比较分析</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_experiments/result_analysis/">实验结果与分析</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">附录</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../4_appendices/glossary/">名词术语表</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_appendices/references.bib">核心参考文献</a>
+</li>
+<li class="toctree-l1"><a class="" href="../../4_appendices/figures/">插图</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_appendices/questions_answered/">常见答辩/开题问题汇总</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="Mobile navigation menu" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../..">小安组文档库</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Docs" class="icon icon-home" href="../.."></a></li>
+<li class="breadcrumb-item">系统设计</li>
+<li class="breadcrumb-item active">核心算法说明</li>
+<li class="wy-breadcrumbs-aside">
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div class="section" itemprop="articleBody">
+<h1 id="_1">核心算法说明</h1>
+<p>单目深度估计算法
+Mask RCNN的改进策略
+PCA分析方法
+具体讲解这几个核心算法的原理、细节、优化方式</p>
+<h2 id="_2">一、单目深度估计算法</h2>
+<h3 id="_3">（一）、算法简介</h3>
+<p><strong>Depth Anything</strong> 是由香港大学、浙江大学与 TikTok 联合提出的 <strong>单目深度估计（Monocular Depth Estimation, MDE）</strong> 框架。它通过结合 <strong>有标签数据学习 + 无标签数据伪监督 + 语义辅助学习</strong>，实现了在多场景、多尺度下鲁棒且高效的单目深度预测。</p>
+<blockquote>
+<p>原始论文：<a href="https://arxiv.org/abs/2401.10891">Depth Anything: Unleashing the Power of Large-Scale Unlabeled Data</a></p>
+</blockquote>
+<h3 id="_4">（二）、核心原理</h3>
+<p>Depth Anything 的核心思想为 <strong>教师-学生框架</strong>（Teacher-Student Paradigm），融合了：</p>
+<ol>
+<li><strong>多数据集监督训练（Multi-dataset Supervised Training）</strong></li>
+<li><strong>大规模无标签图像的伪标签学习（Pseudo-label Learning）</strong></li>
+<li><strong>语义增强辅助任务（Semantics-Assisted Learning）</strong></li>
+</ol>
+<h3 id="_5">（三）、算法结构详解</h3>
+<h4 id="1">1. 教师模型训练阶段</h4>
+<ul>
+<li>使用六个公共深度数据集（如 NYU-Depth-v2、KITTI 等）共计约 <strong>150 万张带标签图像</strong>。</li>
+<li>借鉴 MiDaS 的处理方式（深度归一化 + 仿射不变损失）进行联合训练。</li>
+<li>采用 ResNet 或 Swin Transformer 作为 Backbone，输出中间语义特征。</li>
+</ul>
+<h4 id="2">2. 无标签图像伪监督阶段</h4>
+<ul>
+<li>从网络、图像搜索引擎和公共任务中 <strong>采集数百万张无标签图像</strong>。</li>
+<li>使用训练好的教师模型生成深度伪标签；</li>
+<li>学生模型以带标签图像 + 伪标签图像联合训练，使用数据增强（颜色扭曲 + 空间扭曲）提高泛化能力。</li>
+</ul>
+<h4 id="3-sa">3. 语义辅助任务（SA）</h4>
+<ul>
+<li>对无标签图像添加语义分割伪标签；</li>
+<li>引入 <strong>DINOv2</strong> 等语义强模型对齐语义特征；</li>
+<li>在学生模型中加入辅助分支，引导深度分支学习更有意义的语义特征表示。</li>
+</ul>
+<h3 id="_6">（四）、损失函数设计</h3>
+<p>整体损失函数：</p>
+<p><img alt="hhh" src="../../4_appendices/figures/latex.png"/></p>
+<ul>
+<li><span class="arithmatex"><span class="MathJax_Preview">\mathcal{L}_{\text{depth}}</span><script type="math/tex">\mathcal{L}_{\text{depth}}</script></span>：尺度-不变深度损失；</li>
+<li><span class="arithmatex"><span class="MathJax_Preview">\mathcal{L}_{\text{semantic}}</span><script type="math/tex">\mathcal{L}_{\text{semantic}}</script></span>：辅助语义分割损失；</li>
+<li><span class="arithmatex"><span class="MathJax_Preview">\mathcal{L}_{\text{AffineInvariance}}</span><script type="math/tex">\mathcal{L}_{\text{AffineInvariance}}</script></span>：仿射不变损失（仿照 MiDaS）；</li>
+<li>各损失项加权组合，用于学生网络训练。</li>
+</ul>
+<h3 id="_7">（五）、优化策略</h3>
+<h4 id="_8">提升精度</h4>
+<ul>
+<li>引入更强的视觉基础模型（如 DINOv2）进行语义指导；</li>
+<li>使用 MiDaS 风格的深度归一化和仿射不变损失增强鲁棒性；</li>
+<li>跨多个公开深度数据集训练，提升泛化能力。</li>
+</ul>
+<h4 id="_9">提升效率</h4>
+<ul>
+<li>使用合成图像 + 大规模无标签图像，替代真实标注数据；</li>
+<li>教师模型可以预计算伪标签，加快训练过程；</li>
+<li>在推理阶段只保留学生模型，减少计算成本。</li>
+</ul>
+<h4 id="_10">模型规模多样性</h4>
+<ul>
+<li>官方发布多尺度模型（Tiny~Large），满足不同算力需求：</li>
+<li><code>depth_anything_tiny.pth</code>（25M 参数）</li>
+<li><code>depth_anything_base.pth</code></li>
+<li><code>depth_anything_large.pth</code>（1.3B 参数）</li>
+</ul>
+<h2 id="mask-rcnn">二、Mask RCNN</h2>
+<h3 id="_11">（一）、算法概述</h3>
+<p><strong>Mask R-CNN</strong> 是一种用于目标检测和实例分割的深度学习模型，由 Facebook AI Research 于 2017 年提出。它在 Faster R-CNN 的基础上扩展了一个用于预测每个目标的分割掩码（Mask）分支，从而实现了更加精细的像素级识别。</p>
+<ul>
+<li>目标检测：预测物体的类别和边界框（bounding box）</li>
+<li>实例分割：为每个物体生成像素级别的掩码</li>
+</ul>
+<blockquote>
+<p>原始论文：<a href="https://arxiv.org/abs/1703.06870">Mask R-CNN (He et al., ICCV 2017)</a></p>
+</blockquote>
+<h2 id="_12">（二）、网络结构详解</h2>
+<p>Mask R-CNN 的结构包含以下几个核心模块：</p>
+<ol>
+<li><strong>Backbone 主干网络</strong>（如 ResNet50-FPN）：提取图像特征；</li>
+<li><strong>RPN（Region Proposal Network）</strong>：生成可能含有目标的候选区域（Region Proposal）；</li>
+<li><strong>RoI Align（Region of Interest Align）</strong>：精确对齐每个候选区域的特征；</li>
+<li><strong>Head 网络</strong>（多任务分支）：</li>
+<li>分类分支：预测每个候选框的类别；</li>
+<li>回归分支：预测候选框的坐标；</li>
+<li>分割分支：为每个对象生成二值掩码。</li>
+</ol>
+<h3 id="_13">（三）网络流程图</h3>
+<div class="mermaid">graph TD
+    A["Input Image"] --&gt; B["Backbone CNN (ResNet + FPN)"]
+    B --&gt; C["RPN → Proposals"]
+    C --&gt; D["RoI Align"]
+    D --&gt; E1["Class Head"]
+    D --&gt; E2["BBox Head"]
+    D --&gt; E3["Mask Head"]
+
+    subgraph "Output Heads"
+        E1
+        E2
+        E3
+    end
+</div>
+<h2 id="_14">（四）、关键技术细节</h2>
+<h3 id="1-feature-pyramid-networkfpn">1. Feature Pyramid Network（FPN）</h3>
+<ul>
+<li>用于多尺度特征提取，提高对小物体的识别能力；</li>
+<li>将不同尺度的特征图融合，自底向上传播语义信息。</li>
+</ul>
+<h3 id="2-roi-align">2. RoI Align（精度改进）</h3>
+<ul>
+<li>相比 RoI Pooling，避免了量化误差；</li>
+<li>使用双线性插值对每个 RoI 进行精确采样。</li>
+</ul>
+<h3 id="3">3. 多任务损失函数</h3>
+<p>Mask R-CNN 的损失函数包含三个部分：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">
+L = L_{\text{cls}} + L_{\text{box}} + L_{\text{mask}}
+</div>
+<script type="math/tex; mode=display">
+L = L_{\text{cls}} + L_{\text{box}} + L_{\text{mask}}
+</script>
+</div>
+<ul>
+<li><span class="arithmatex"><span class="MathJax_Preview">L_{\text{cls}}</span><script type="math/tex">L_{\text{cls}}</script></span>：分类交叉熵损失；</li>
+<li><span class="arithmatex"><span class="MathJax_Preview">L_{\text{box}}</span><script type="math/tex">L_{\text{box}}</script></span>：边界框回归损失（Smooth L1）；</li>
+<li><span class="arithmatex"><span class="MathJax_Preview">L_{\text{mask}}</span><script type="math/tex">L_{\text{mask}}</script></span>：每个类别的二分类像素掩码损失（BCE loss）。</li>
+</ul>
+<h2 id="_15">（五）、优化方式与改进方向</h2>
+<h3 id="_16">提高精度</h3>
+<ul>
+<li><strong>使用更深的主干网络</strong>：如 ResNet-101, ResNeXt；</li>
+<li><strong>融合注意力机制</strong>：CBAM、SE-Block；</li>
+<li><strong>使用 Soft-NMS</strong>：替代标准 NMS 减少目标漏检；</li>
+<li><strong>类别特定的掩码预测</strong>：针对不同类别训练独立的掩码分支。</li>
+</ul>
+<h3 id="_17">提高速度</h3>
+<ul>
+<li><strong>简化 Backbone（如 MobileNet）</strong>：用于边缘设备；</li>
+<li><strong>使用共享计算</strong>：RoI Align 时共享基础特征图；</li>
+<li><strong>使用 TensorRT / ONNX 优化推理速度</strong>。</li>
+</ul>
+<h3 id="_18">增强泛化能力</h3>
+<ul>
+<li><strong>多尺度训练与测试</strong></li>
+<li><strong>数据增强策略（翻转、缩放、色彩变换）</strong></li>
+<li><strong>使用更大规模的预训练模型（如 COCO、LVIS）</strong></li>
+</ul>
+<h2 id="pca">三、PCA分析方法</h2>
+<h3 id="_19">（一）背景简介</h3>
+<p>在点云处理中，获取点云的<strong>主方向</strong>对于物体姿态估计、对齐、建模等任务非常关键。主方向反映了点云在空间中的分布趋势，<strong>PCA（Principal Component Analysis）</strong> 是一种经典的无监督学习算法，可以有效提取数据的主方向信息。</p>
+<p>在三维点云中，PCA 能够识别数据在三个主轴方向（X、Y、Z）上的最大方差方向，从而估算出点云的长轴、宽轴和厚轴等几何特性。</p>
+<h3 id="pca_1">（二）PCA 基本原理</h3>
+<p>PCA 是通过以下步骤实现数据主方向提取的：</p>
+<ol>
+<li><strong>均值中心化</strong>：对所有点进行中心化处理，使其均值为 0；</li>
+<li><strong>协方差矩阵计算</strong>：计算中心化后点集的协方差矩阵；</li>
+<li><strong>特征值分解</strong>：对协方差矩阵进行特征值分解，得到特征值和特征向量；</li>
+<li><strong>排序并选择主轴</strong>：根据特征值大小排序，对应的特征向量即为主方向。</li>
+</ol>
+<h3 id="_20">（三）算法流程</h3>
+<p>设点云数据集为 <span class="arithmatex"><span class="MathJax_Preview">P = \{p_1, p_2, ..., p_n\}</span><script type="math/tex">P = \{p_1, p_2, ..., p_n\}</script></span>，其中每个 <span class="arithmatex"><span class="MathJax_Preview">p_i \in \mathbb{R}^3</span><script type="math/tex">p_i \in \mathbb{R}^3</script></span> 是三维点。</p>
+<h4 id="1_1">1. 计算均值点</h4>
+<div class="arithmatex">
+<div class="MathJax_Preview">
+\bar{p} = \frac{1}{n} \sum_{i=1}^{n} p_i
+</div>
+<script type="math/tex; mode=display">
+\bar{p} = \frac{1}{n} \sum_{i=1}^{n} p_i
+</script>
+</div>
+<h4 id="2_1">2. 中心化点云</h4>
+<div class="arithmatex">
+<div class="MathJax_Preview">
+P' = \{p'_i = p_i - \bar{p} \mid i = 1, 2, ..., n\}
+</div>
+<script type="math/tex; mode=display">
+P' = \{p'_i = p_i - \bar{p} \mid i = 1, 2, ..., n\}
+</script>
+</div>
+<h4 id="3_1">3. 构建协方差矩阵</h4>
+<p>设 <span class="arithmatex"><span class="MathJax_Preview">X</span><script type="math/tex">X</script></span> 为中心化后的 <span class="arithmatex"><span class="MathJax_Preview">n \times 3</span><script type="math/tex">n \times 3</script></span> 矩阵（每行是一个 <span class="arithmatex"><span class="MathJax_Preview">p'_i</span><script type="math/tex">p'_i</script></span>），则协方差矩阵为：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">
+C = \frac{1}{n} X^T X
+</div>
+<script type="math/tex; mode=display">
+C = \frac{1}{n} X^T X
+</script>
+</div>
+<h4 id="4">4. 特征分解</h4>
+<p>对协方差矩阵 <span class="arithmatex"><span class="MathJax_Preview">C</span><script type="math/tex">C</script></span> 进行特征值分解：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">
+C v_i = \lambda_i v_i \quad (i = 1, 2, 3)
+</div>
+<script type="math/tex; mode=display">
+C v_i = \lambda_i v_i \quad (i = 1, 2, 3)
+</script>
+</div>
+<p>其中 <span class="arithmatex"><span class="MathJax_Preview">\lambda_i</span><script type="math/tex">\lambda_i</script></span> 是特征值，<span class="arithmatex"><span class="MathJax_Preview">v_i</span><script type="math/tex">v_i</script></span> 是对应的特征向量。</p>
+<h4 id="5">5. 结果解释</h4>
+<ul>
+<li>最大特征值对应的特征向量：<strong>主方向（长轴）</strong></li>
+<li>次大特征值对应的特征向量：<strong>次主方向（宽轴）</strong></li>
+<li>最小特征值对应的特征向量：<strong>法向/厚轴</strong></li>
+</ul>
+<h3 id="_21">（四）项目中具体实现</h3>
+<pre><code class="language-python">        # 通过PCA找到主要方向
+        from sklearn.decomposition import PCA
+
+        try:
+            # 提取属于最大簇的点
+            largest_cluster_points = points[labels == max_cluster_index]
+
+            # 执行 PCA
+            pca = PCA(n_components=3)
+            pca.fit(largest_cluster_points)
+</code></pre>
+</div>
+</div><footer>
+<div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-left" href="../sensor_fusion/" title="多模态数据融合与PCA分析"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../../2_implementation/hardware_assumptions/" title="无硬件改造的设计考量">Next <span class="icon icon-circle-arrow-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="Versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span><a href="../sensor_fusion/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../../2_implementation/hardware_assumptions/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script src="../../js/jquery-3.6.0.min.js"></script>
+<script>var base_url = "../..";</script>
+<script src="../../js/theme_extra.js"></script>
+<script src="../../js/theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="../../search/main.js"></script>
+<script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

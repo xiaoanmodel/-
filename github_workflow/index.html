@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>GitHub Workflow - 小安组文档库</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "GitHub Workflow";
+        var mkdocs_page_input_path = "github_workflow.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> 小安组文档库
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributors</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTORS/">Contributors</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributing</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING/">Contributing</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" >GitHub Workflow</a>
+    <ul class="current">
+                <li class="toctree-l2 current"><a class="reference internal current" href="#">GitHub Workflow</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#_1">🧭 目的</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_2">🗂 工作流概览</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#1-issue">1️⃣ 创建 Issue（问题/任务）</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_3">用途</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_4">建议格式</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-issue">2️⃣ 新建分支（基于 Issue）</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_5">命名规范</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3">3️⃣ 开发阶段</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-pull-request">4️⃣ 提交 Pull Request（合并请求）</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_7">目的</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_8">操作步骤</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pr">PR 模板（可选）</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5-code-review">5️⃣ 代码审查（Code Review）</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_9">审查要点</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_10">审查意见</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#6">6️⃣ 合并与清理</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#_11">合并方式</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#_12">清理工作</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_13">✅ 最佳实践</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_14">🔧 推荐配置（可选）</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#_15">📎 示例</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#issue">Issue 示例</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pr_1">PR 示例</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">项目概述</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../0_project_overview/background/">研究背景与动机</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../0_project_overview/related_work/">研究进展/文献综述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../0_project_overview/problem_statement/">明确提出研究问题</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../0_project_overview/contribution_summary/">创新点总览</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">部署环境</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../0_environment_setup/overview/">环境部署概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../0_environment_setup/hardware/">硬件环境</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../0_environment_setup/software/">软件环境</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">系统设计</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../1_system_design/architecture/">系统架构图与模块功能说明</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../1_system_design/client_design/">鸿蒙客户端设计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../1_system_design/server_design/">Flask 服务端设计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../1_system_design/sensor_fusion/">多模态数据融合与PCA分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../1_system_design/algorithms/">核心算法说明</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">系统实现细节</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_implementation/hardware_assumptions/">无硬件改造的设计考量</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_implementation/monocular_depth/">单目深度估计实现</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_implementation/instance_segmentation/">Mask RCNN替代vLLM的具体实现</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_implementation/pointcloud_generation/">点云构建逻辑</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../2_implementation/inference_pipeline/">端到端推理流程说明</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">实验设计与评估</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_experiments/experiment_plan/">实验方案总览</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_experiments/dataset_description/">自建数据集说明</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_experiments/evaluation_metrics/">指标定义与评估标准</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_experiments/baseline_comparison/">对标方案比较分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../3_experiments/result_analysis/">实验结果与分析</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">附录</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_appendices/glossary/">名词术语表</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_appendices/references.bib">核心参考文献</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../4_appendices/figures/">插图</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../4_appendices/questions_answered/">常见答辩/开题问题汇总</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">小安组文档库</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">Contributing</li>
+          <li class="breadcrumb-item">GitHub Workflow</li>
+      <li class="breadcrumb-item active">GitHub Workflow</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="github-issues-pull-requests">GitHub 协同工作流指南（基于 Issues 和 Pull Requests）</h1>
+<h2 id="_1">🧭 目的</h2>
+<p>本指南旨在规范项目协作流程，帮助团队成员高效利用 GitHub 的 Issues 和 Pull Requests 功能进行任务管理、代码开发、审查与合并。</p>
+<hr />
+<h2 id="_2">🗂 工作流概览</h2>
+<pre><code>Issue → 分支 → 开发 → Pull Request → 代码审查 → 合并 → 关闭 Issue
+</code></pre>
+<hr />
+<h2 id="1-issue">1️⃣ 创建 Issue（问题/任务）</h2>
+<h3 id="_3">用途</h3>
+<ul>
+<li>记录 <strong>新功能需求</strong></li>
+<li>报告 <strong>Bug</strong></li>
+<li>规划 <strong>重构/优化</strong></li>
+<li>讨论 <strong>技术方案</strong> (建议相关问题的讨论<strong>集中在对应的 Issue 中</strong>)</li>
+<li>追踪 <strong>任务进度</strong></li>
+<li>记录 <strong>文档更新</strong></li>
+<li>其他 <strong>项目相关问题</strong></li>
+</ul>
+<h3 id="_4">建议格式</h3>
+<ul>
+<li>标题：简明扼要说明问题</li>
+<li>内容：</li>
+<li>描述问题或需求</li>
+<li>补充截图、链接、上下文信息</li>
+<li>指定 <code>labels</code>（如 <code>bug</code>, <code>enhancement</code>, <code>discussion</code>）</li>
+<li>如可行，指定负责人 (<code>Assignees</code>)</li>
+</ul>
+<hr />
+<h2 id="2-issue">2️⃣ 新建分支（基于 Issue）</h2>
+<h3 id="_5">命名规范</h3>
+<pre><code class="language-bash"># 一般格式：issue编号-描述
+git checkout -b feature/123-add-login
+git checkout -b fix/145-fix-crash
+</code></pre>
+<h4 id="_6">文档相关命名规范</h4>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>命名规范</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>分支名</td>
+<td><code>feature/&lt;issue编号-章节名&gt;</code> 或 <code>fix/&lt;issue编号-修复点&gt;</code></td>
+</tr>
+<tr>
+<td>PR 标题</td>
+<td><code>[章节] 内容更新 - your_name</code></td>
+</tr>
+<tr>
+<td>Issue 标签</td>
+<td><code>task</code>、<code>in-progress</code>、<code>review-needed</code> 等</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 分支名建议包含 issue 编号，方便关联追踪。</p>
+</blockquote>
+<hr />
+<h2 id="3">3️⃣ 开发阶段</h2>
+<p>在新建的分支上进行开发：</p>
+<ul>
+<li>保持提交原子化、语义清晰（如：<code>fix: 修复登陆页面崩溃的问题</code>）</li>
+<li>多人协作时注意同步远程分支：<code>git pull origin main</code></li>
+</ul>
+<hr />
+<h2 id="4-pull-request">4️⃣ 提交 Pull Request（合并请求）</h2>
+<h3 id="_7">目的</h3>
+<ul>
+<li>提交代码以供审查</li>
+<li>触发 CI 流程</li>
+<li>最终合并到主分支（<code>main</code> 或 <code>dev</code>）</li>
+</ul>
+<h3 id="_8">操作步骤</h3>
+<ol>
+<li>推送分支：<code>git push origin feature/123-add-login</code></li>
+<li>在 GitHub 上发起 PR，填写说明：</li>
+<li>引用相关 Issue：<code>Closes #123</code>（或 <code>Fixes</code>, <code>Resolves</code>）</li>
+<li>简要说明改动内容</li>
+<li>标明是否需要其他人审查（可指定 Reviewer）</li>
+</ol>
+<h3 id="pr">PR 模板（可选）</h3>
+<p>可添加 <code>.github/pull_request_template.md</code> 文件作为 PR 默认内容，确保信息完整。</p>
+<hr />
+<h2 id="5-code-review">5️⃣ 代码审查（Code Review）</h2>
+<h3 id="_9">审查要点</h3>
+<ul>
+<li>代码风格是否统一</li>
+<li>是否有逻辑漏洞</li>
+<li>是否影响已有功能</li>
+<li>是否包含必要的测试</li>
+</ul>
+<h3 id="_10">审查意见</h3>
+<p>可通过 GitHub 的 Review 功能：</p>
+<ul>
+<li><code>Comment</code>：提供建议</li>
+<li><code>Approve</code>：同意合并</li>
+<li><code>Request changes</code>：需改进后再审查</li>
+</ul>
+<hr />
+<h2 id="6">6️⃣ 合并与清理</h2>
+<h3 id="_11">合并方式</h3>
+<ul>
+<li><code>Squash and merge</code>：保持主分支简洁，适合多人贡献的小变更(暂时pr强制使用squash and merge）)</li>
+<li><code>Rebase and merge</code>：保持线性提交历史</li>
+<li>避免使用 <code>Merge commit</code>（除非确有必要）</li>
+</ul>
+<h3 id="_12">清理工作</h3>
+<ul>
+<li>PR 合并后自动关闭对应 Issue</li>
+<li>删除已合并的分支（可在 PR 页面一键操作）</li>
+</ul>
+<hr />
+<h2 id="_13">✅ 最佳实践</h2>
+<ul>
+<li>每个功能/问题一个 Issue，对应一个 PR</li>
+<li>强制 Review：所有 PR 必须至少有 1 名 Reviewer 审查通过</li>
+<li>配置自动化检查（CI）：如代码格式、单元测试、构建检查等</li>
+<li>保持沟通，鼓励在 Issue 和 PR 中写评论、反馈、建议</li>
+</ul>
+<hr />
+<h2 id="_14">🔧 推荐配置（可选）</h2>
+<ul>
+<li><strong>分支保护规则</strong>：</li>
+<li>禁止向 <code>main</code> 直接推送</li>
+<li>合并需通过 CI + 审查</li>
+<li><strong>Labels 标签分类</strong>：</li>
+<li><code>bug</code>, <code>enhancement</code>, <code>question</code>, <code>wontfix</code>, <code>refactor</code></li>
+<li><strong>PR 模板</strong>：统一格式，提高质量</li>
+<li><strong>自动关联脚本</strong>（GitHub Actions）：</li>
+<li>合并 PR 自动关闭 Issue</li>
+<li>自动分配 Reviewer</li>
+</ul>
+<hr />
+<h2 id="_15">📎 示例</h2>
+<h3 id="issue">Issue 示例</h3>
+<pre><code>标题：登录页面报错（TypeError）
+内容：
+- 报错信息：TypeError: Cannot read property 'value' of null
+- 浏览器：Chrome v110
+- 复现步骤：
+  1. 打开登录页面
+  2. 立即点击登录
+  3. 页面崩溃
+</code></pre>
+<h3 id="pr_1">PR 示例</h3>
+<pre><code>标题：[Fix] 修复登录页面 null 报错 (#123)
+内容：
+- 问题原因：表单未初始化就调用 `value`
+- 解决方案：添加 null 检查
+- 相关 Issue：Closes #123
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../CONTRIBUTING/" class="btn btn-neutral float-left" title="Contributing"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../0_project_overview/background/" class="btn btn-neutral float-right" title="研究背景与动机">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../CONTRIBUTING/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../0_project_overview/background/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

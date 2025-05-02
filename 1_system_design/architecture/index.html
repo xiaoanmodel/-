@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html class="writer-html5" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="../../img/favicon.ico" rel="shortcut icon"/>
+<title>系统架构图与模块功能说明 - 小安组文档库</title>
+<link href="../../css/theme.css" rel="stylesheet"/>
+<link href="../../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet"/>
+<script>
+        // Current page data
+        var mkdocs_page_name = "\u7cfb\u7edf\u67b6\u6784\u56fe\u4e0e\u6a21\u5757\u529f\u80fd\u8bf4\u660e";
+        var mkdocs_page_input_path = "1_system_design/architecture.md";
+        var mkdocs_page_url = null;
+      </script>
+<!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+</head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href="../.."> 小安组文档库
+        </a><div role="search">
+<form action="../../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input aria-label="Search docs" name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Contributors</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTORS/">Contributors</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING/">Contributing</a>
+</li>
+<li class="toctree-l1"><a class="reference internal">GitHub Workflow</a>
+<ul>
+<li class="toctree-l2"><a class="reference internal" href="../../github_workflow/">GitHub Workflow</a>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">项目概述</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/background/">研究背景与动机</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/related_work/">研究进展/文献综述</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/problem_statement/">明确提出研究问题</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/contribution_summary/">创新点总览</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">部署环境</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/overview/">环境部署概述</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/hardware/">硬件环境</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/software/">软件环境</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">系统设计</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal current" href="#">系统架构图与模块功能说明</a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#_2">一.系统设计思路</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#-">系统采用客户端-服务端架构进行功能验证：</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#_3">核心技术创新点：</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#_4">二.完整系统框架示意图</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../client_design/">鸿蒙客户端设计</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../server_design/">Flask 服务端设计</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../sensor_fusion/">多模态数据融合与PCA分析</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../algorithms/">核心算法说明</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">系统实现细节</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../2_implementation/hardware_assumptions/">无硬件改造的设计考量</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_implementation/monocular_depth/">单目深度估计实现</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_implementation/instance_segmentation/">Mask RCNN替代vLLM的具体实现</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_implementation/pointcloud_generation/">点云构建逻辑</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../2_implementation/inference_pipeline/">端到端推理流程说明</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">实验设计与评估</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../3_experiments/experiment_plan/">实验方案总览</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_experiments/dataset_description/">自建数据集说明</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_experiments/evaluation_metrics/">指标定义与评估标准</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_experiments/baseline_comparison/">对标方案比较分析</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../3_experiments/result_analysis/">实验结果与分析</a>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">附录</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../4_appendices/glossary/">名词术语表</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_appendices/references.bib">核心参考文献</a>
+</li>
+<li class="toctree-l1"><a class="" href="../../4_appendices/figures/">插图</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../4_appendices/questions_answered/">常见答辩/开题问题汇总</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="Mobile navigation menu" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="../..">小安组文档库</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content"><div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a aria-label="Docs" class="icon icon-home" href="../.."></a></li>
+<li class="breadcrumb-item">系统设计</li>
+<li class="breadcrumb-item active">系统架构图与模块功能说明</li>
+<li class="wy-breadcrumbs-aside">
+</li>
+</ul>
+<hr/>
+</div>
+<div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+<div class="section" itemprop="articleBody">
+<h1 id="_1">系统整体架构</h1>
+<h2 id="_2">一.系统设计思路</h2>
+<h3 id="-">系统采用客户端-服务端架构进行功能验证：</h3>
+<ol>
+<li>客户端（鸿蒙系统）：实现图像采集、方向传感器数据获取、结果轮询等功能</li>
+<li>服务端（Flask框架）：负责接收图像数据并执行核心算法处理</li>
+<li>算法模块：</li>
+<li>通过单目深度估计与实例分割技术构建车辆三维点云</li>
+<li>改进原vLLM方法存在的时延高、稳定性不足问题</li>
+<li>结合终端方向传感器数据，应用PCA主成分分析计算车辆实际朝向</li>
+</ol>
+<h3 id="_3">核心技术创新点：</h3>
+<p>双流特征提取网络：并行处理RGB图像与深度图，通过跨模态注意力机制增强特征表达能力  </p>
+<div class="mermaid">flowchart LR
+    鸿蒙终端 -- 图像/IMU数据 --&gt; Flask服务端
+    Flask服务端 -- 点云生成 --&gt; 改进vLLM方式
+    传感器融合模块 --&gt; PCA主成分分析 --&gt; 方向校正
+    方向校正 --&gt; Flask服务端
+
+</div>
+<h2 id="_4">二.完整系统框架示意图</h2>
+<p><img alt="系统框架图" src="../../4_appendices/figures/architecture.png"/></p>
+</div>
+</div><footer>
+<div aria-label="Footer Navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-left" href="../../0_environment_setup/software/" title="软件环境"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+<a class="btn btn-neutral float-right" href="../client_design/" title="鸿蒙客户端设计">Next <span class="icon icon-circle-arrow-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="Versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span><a href="../../0_environment_setup/software/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../client_design/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script src="../../js/jquery-3.6.0.min.js"></script>
+<script>var base_url = "../..";</script>
+<script src="../../js/theme_extra.js"></script>
+<script src="../../js/theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="../../search/main.js"></script>
+<script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+<script type="module">import mermaid from "https://unpkg.com/mermaid@10.4.0/dist/mermaid.esm.min.mjs";
+mermaid.initialize({});</script></body>
+</html>

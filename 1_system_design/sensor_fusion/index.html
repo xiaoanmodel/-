@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>多模态数据融合与PCA分析 - 小安组文档库</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "\u591a\u6a21\u6001\u6570\u636e\u878d\u5408\u4e0ePCA\u5206\u6790";
+        var mkdocs_page_input_path = "1_system_design/sensor_fusion.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> 小安组文档库
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributors</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTORS/">Contributors</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Contributing</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../CONTRIBUTING/">Contributing</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" >GitHub Workflow</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../../github_workflow/">GitHub Workflow</a>
+                </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">项目概述</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/background/">研究背景与动机</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/related_work/">研究进展/文献综述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/problem_statement/">明确提出研究问题</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_project_overview/contribution_summary/">创新点总览</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">部署环境</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/overview/">环境部署概述</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/hardware/">硬件环境</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../0_environment_setup/software/">软件环境</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">系统设计</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../architecture/">系统架构图与模块功能说明</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../client_design/">鸿蒙客户端设计</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../server_design/">Flask 服务端设计</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">多模态数据融合与PCA分析</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#_1">一、概述</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_2">二、方向传感器数据</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#exif">（一）EXIF文件格式</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#pitchrollyaw">（二）欧拉角Pitch、Roll、Yaw</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1">1. 理解三轴角度的含义</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2">2. 旋转矩阵的构造</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3">3. 总旋转矩阵</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#exif_1">（三）EXIF数据传输</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#1-exif">1. 读取图像的 EXIF 信息</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#2_1">2. 解析方向角</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#3_1">3. 计算旋转矩阵</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#4">4. 坐标转换</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#pca_1">三、PCA分析</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1_1">1. 获取电动车车身掩膜</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2_2">2. 提取车身区域</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3_2">3. 获取车身深度图</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4_1">4. 生成点云</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5">5. 点云降噪</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#6-pca">6. PCA分析</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#_3">四、数据融合流程</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../algorithms/">核心算法说明</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">系统实现细节</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../2_implementation/hardware_assumptions/">无硬件改造的设计考量</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../2_implementation/monocular_depth/">单目深度估计实现</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../2_implementation/instance_segmentation/">Mask RCNN替代vLLM的具体实现</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../2_implementation/pointcloud_generation/">点云构建逻辑</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../2_implementation/inference_pipeline/">端到端推理流程说明</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">实验设计与评估</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/experiment_plan/">实验方案总览</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/dataset_description/">自建数据集说明</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/evaluation_metrics/">指标定义与评估标准</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/baseline_comparison/">对标方案比较分析</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../3_experiments/result_analysis/">实验结果与分析</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">附录</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/glossary/">名词术语表</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/references.bib">核心参考文献</a>
+                  </li>
+                  <li class="toctree-l1"><a class="" href="../../4_appendices/figures/">插图</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../4_appendices/questions_answered/">常见答辩/开题问题汇总</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">小安组文档库</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">系统设计</li>
+      <li class="breadcrumb-item active">多模态数据融合与PCA分析</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="pca">多模态数据融合与PCA分析</h1>
+<h2 id="_1">一、概述</h2>
+<ul>
+<li>本章节介绍了我们在数据处理流程中所使用的多模态数据融合与PCA分析方法，其中涵盖了图像的方向传感器数据（EXIF信息）与三维点云数据的集成与对齐。</li>
+<li>首先从图像中提取包含姿态信息（偏航角Yaw、俯仰角Pitch、翻滚角Roll）的EXIF用户评论字段，并基于欧拉角构建旋转矩阵，描述相机在空间中的朝向。</li>
+<li>接着，结合车辆图像的语义分割结果和深度估计模型生成的三维点云数据，提取出车身部分的空间结构信息。</li>
+<li>最后，利用PCA（主成分分析）方法对车身点云进行分析，提取其主要空间方向，并通过旋转矩阵将其从相机坐标系转换到世界坐标系中。
+这一数据融合过程使我们能够准确地获取车辆在世界坐标中的朝向信息，为后续的定位、建图或导航任务提供坚实的几何基础。</li>
+</ul>
+<h2 id="_2">二、方向传感器数据</h2>
+<h3 id="exif">（一）EXIF文件格式</h3>
+<p><strong>EXIF</strong>（Exchangeable Image File Format）是专门为数码相机照片设定的一种文件格式，用于记录数码照片的属性信息和拍摄数据。EXIF信息可以附加于JPEG、TIFF、RIFF等文件中，为其增加有关数码相机拍摄信息的内容和索引图或图像处理软件的版本信息。EXIF信息包含了丰富的拍摄数据和图像属性，主要包括以下几类信息：</p>
+<ul>
+<li>图像信息：如图像描述、来源、生产厂家、设备型号、<strong>方向</strong>、分辨率、软件版本等。</li>
+<li>拍摄记录：如曝光时间、光圈值、曝光程序、ISO感光度、拍摄时间、数字化时间、色彩组合方案、压缩程度、曝光补偿、最大光圈、测光方式、光源、闪光灯使用情况、焦距等。</li>
+<li>缩略图信息：如缩略图的宽度和高度。</li>
+<li>GPS信息：如拍摄时的经度、纬度、高度等</li>
+</ul>
+<p>我们需要的方向信息保存在了UserComment字段，解析后可用于计算相机与车辆方向</p>
+<pre><code class="language-json">UserComment: ASCIIYaw:185.22156,Pitch:-31.785954957370578,Roll:4.045600990797533
+</code></pre>
+<p>解析后的 UserComment:</p>
+<pre><code class="language-json">{'Yaw': '185.22156', 'Pitch': '-31.785954957370578', 'Roll': '4.045600990797533'}
+</code></pre>
+<h3 id="pitchrollyaw">（二）欧拉角Pitch、Roll、Yaw</h3>
+<p><img alt="ohhhhhhhhhhhhhhhhhhhhhhhhhhhhhh" src="../../4_appendices/figures/3angle.png" /></p>
+<h4 id="1">1. <strong>理解三轴角度的含义</strong></h4>
+<ul>
+<li>
+<p>Yaw (偏航角): 绕 YY-轴旋转的角度。数值范围0~360。正北方为0，顺时针增加，1°对应yaw单位数值1(另外两个参数同样也是)</p>
+</li>
+<li>
+<p>Pitch (俯仰角): 绕 XX-轴旋转的角度。数值范围-90~+90。方向朝向水平时数值为0，朝向正上方时数值为+90，朝向正下方时数值为-90</p>
+</li>
+<li>
+<p>Roll (翻滚角): 绕 ZZ-轴旋转的角度。数值范围<code>-45°~+45°</code>。相机未朝正方旋转、横置或者倒置时数值为0，所以数值范围是<code>-45°~+45°</code>，顺时针（手持朝向）时为负，逆时针为正。</p>
+</li>
+</ul>
+<h4 id="2">2. <strong>旋转矩阵的构造</strong></h4>
+<p>旋转矩阵的作用是通过旋转角度对向量进行变换。为了计算重力方向的变化，我们需要分别计算绕 Yaw、Pitch 和 Roll 旋转的矩阵：
+(1)<strong>绕 Y轴的旋转矩阵 (偏航角)</strong>
+偏航角表示相机相对于地面的水平方向旋转，绕 Y轴 旋转的矩阵如下：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">
+R_y(\text{Yaw}) =
+\begin{bmatrix}
+\cos(\text{Yaw}) &amp; 0 &amp; \sin(\text{Yaw}) \\
+0 &amp; 1 &amp; 0 \\
+-\sin(\text{Yaw}) &amp; 0 &amp; \cos(\text{Yaw})
+\end{bmatrix}</div>
+<script type="math/tex; mode=display">
+R_y(\text{Yaw}) =
+\begin{bmatrix}
+\cos(\text{Yaw}) & 0 & \sin(\text{Yaw}) \\
+0 & 1 & 0 \\
+-\sin(\text{Yaw}) & 0 & \cos(\text{Yaw})
+\end{bmatrix}</script>
+</div>
+<p>这个矩阵使得水平方向上的向量在旋转时，能够绕 Y轴 旋转。
+(2)<strong>绕 X轴的旋转矩阵 (俯仰角)</strong>
+俯仰角表示相机上下旋转，绕 X轴 旋转的矩阵如下：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">R_x(\text{Pitch}) =
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 \\
+0 &amp; \cos(\text{Pitch}) &amp; -\sin(\text{Pitch}) \\
+0 &amp; \sin(\text{Pitch}) &amp; \cos(\text{Pitch})
+\end{bmatrix}</div>
+<script type="math/tex; mode=display">R_x(\text{Pitch}) =
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & \cos(\text{Pitch}) & -\sin(\text{Pitch}) \\
+0 & \sin(\text{Pitch}) & \cos(\text{Pitch})
+\end{bmatrix}</script>
+</div>
+<p>这个矩阵使得垂直方向上的向量能够绕 X轴 旋转，表示上下俯仰。
+(3)<strong>绕 Z轴的旋转矩阵 (翻滚角)</strong>
+翻滚角表示相机沿着前后方向旋转，绕 Z轴 旋转的矩阵如下：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">R_z(\text{Roll}) =
+\begin{bmatrix}
+\cos(\text{Roll}) &amp; -\sin(\text{Roll}) &amp; 0 \\
+\sin(\text{Roll}) &amp; \cos(\text{Roll}) &amp; 0 \\
+0 &amp; 0 &amp; 1
+\end{bmatrix}</div>
+<script type="math/tex; mode=display">R_z(\text{Roll}) =
+\begin{bmatrix}
+\cos(\text{Roll}) & -\sin(\text{Roll}) & 0 \\
+\sin(\text{Roll}) & \cos(\text{Roll}) & 0 \\
+0 & 0 & 1
+\end{bmatrix}</script>
+</div>
+<p>这个矩阵使得相机的旋转沿着其自身的 Z轴 发生翻滚。</p>
+<h4 id="3">3. <strong>总旋转矩阵</strong></h4>
+<p>为了将重力方向从世界坐标系变换到相机坐标系，我们需要将以上三个旋转矩阵相乘。旋转的顺序是先绕Z轴翻滚角旋转，然后绕 X轴俯仰角旋转，最后绕Y轴偏航角旋转。我们通过矩阵乘法组合这三次旋转。因此，最终的总旋转矩阵为：</p>
+<div class="arithmatex">
+<div class="MathJax_Preview">R = R_z(\text{Roll}) \cdot R_x(\text{Pitch}) \cdot R_y(\text{Yaw})</div>
+<script type="math/tex; mode=display">R = R_z(\text{Roll}) \cdot R_x(\text{Pitch}) \cdot R_y(\text{Yaw})</script>
+</div>
+<h3 id="exif_1">（三）EXIF数据传输</h3>
+<p>我们设计了一个DirectBody类用于提取EXIF信息、解析方向角、计算旋转矩阵和坐标系转换的功能</p>
+<h4 id="1-exif">1. 读取图像的 EXIF 信息</h4>
+<p>DirectedBody 类通过图像路径读取并解析 EXIF 信息，特别是从图像的 UserComment 字段中提取方向数据（yaw、pitch、roll）。</p>
+<p><strong>方法：_read_exif</strong>
+该方法使用 PIL 库读取图像文件并提取 EXIF 数据。如果图像包含 EXIF 数据，方法会将标签 ID 转换为可读标签并返回字典形式的 EXIF 数据。</p>
+<pre><code class="language-python">def _read_exif(self):
+    # 打开图像文件并提取 EXIF 数据
+    image = Image.open(self.image_path)
+    exif_data = image._getexif()
+    if exif_data:
+        exif = {}
+        for tag_id, value in exif_data.items():
+            tag = TAGS.get(tag_id, tag_id)
+            exif[tag] = value
+        return exif
+    else:
+        print(&quot;该图片没有 EXIF 信息。&quot;)
+        return None
+</code></pre>
+<h4 id="2_1">2. 解析方向角</h4>
+<p>DirectedBody 类从图像的 EXIF 数据中解析出方向角（yaw、pitch、roll）。这些数据通常存储在 UserComment 字段中，并以键值对形式存储。</p>
+<p><strong>方法：_parse_orientation</strong>
+该方法解析 UserComment 字段中的数据，提取出 yaw（偏航角）、pitch（俯仰角）和 roll（翻滚角）。这些角度以度为单位返回。</p>
+<pre><code class="language-python">def _parse_orientation(self):
+    user_comment = self.exif_data.get(&quot;UserComment&quot;)
+    if not user_comment:
+        raise ValueError(&quot;UserComment 字段不存在或为空。&quot;)
+    comment = user_comment.split[&quot;\x00&quot;](-1)  # 处理编码前缀
+    parsed = {}
+    for part in comment.split(&quot;,&quot;):
+        key, value = part.split(&quot;:&quot;)
+        parsed[key.strip()] = value.strip()
+    return parsed
+</code></pre>
+<h4 id="3_1">3. 计算旋转矩阵</h4>
+<p>通过 yaw、pitch 和 roll 角度，DirectedBody 类计算旋转矩阵，用于将相机坐标系和参考坐标系之间的转换。</p>
+<p><strong>方法：_compute_rotation_matrix</strong>
+该方法将偏航角（yaw）、俯仰角（pitch）和翻滚角（roll）转换为弧度，然后分别计算绕 Y、X 和 Z 轴的旋转矩阵。最后，所有旋转矩阵相乘得到总的旋转矩阵。</p>
+<pre><code class="language-python">def _compute_rotation_matrix(self):
+    yaw_rad = np.radians(self.yaw)
+    pitch_rad = np.radians(self.pitch)
+    roll_rad = np.radians(self.roll)
+
+    # 绕 Y 轴的旋转矩阵（偏航）
+    R_y = np.array([
+        [np.cos(yaw_rad), 0, np.sin(yaw_rad)],
+        [0, 1, 0],
+        [-np.sin(yaw_rad), 0, np.cos(yaw_rad)],
+    ])
+    # 绕 X 轴的旋转矩阵（俯仰）
+    R_x = np.array([
+        [1, 0, 0],
+        [0, np.cos(pitch_rad), -np.sin(pitch_rad)],
+        [0, np.sin(pitch_rad), np.cos(pitch_rad)],
+    ])
+    # 绕 Z 轴的旋转矩阵（翻滚）
+    R_z = np.array([
+        [np.cos(roll_rad), -np.sin(roll_rad), 0],
+        [np.sin(roll_rad), np.cos(roll_rad), 0],
+        [0, 0, 1],
+    ])
+
+    # 计算总的旋转矩阵
+    out = R_z @ R_x @ R_y
+    return out
+</code></pre>
+<h4 id="4">4. 坐标转换</h4>
+<p>DirectedBody 类提供将坐标从世界坐标系转换为相机坐标系，或者从相机坐标系转换回世界坐标系的方法。这通过旋转矩阵的乘法实现。</p>
+<p><strong>方法：world_to_camera_coordinates</strong>
+将世界坐标系的属性转换为相机坐标系。</p>
+<pre><code class="language-python">def world_to_camera_coordinates(self, attr_name):
+    attr_value = getattr(self, attr_name, None)
+    if attr_value is not None and getattr(self, f&quot;{attr_name}_CoordinateSystem_iscamera&quot;, False) == False:
+        setattr(self, attr_name, self.rotation_matrix_inv @ attr_value)
+        setattr(self, f&quot;{attr_name}_CoordinateSystem_iscamera&quot;, True)
+</code></pre>
+<p><strong>方法：camera_to_world_coordinates</strong>
+将相机坐标系的属性转换为世界坐标系。</p>
+<pre><code class="language-python">def camera_to_world_coordinates(self, attr_name):
+    attr_value = getattr(self, attr_name, None)
+    if attr_value is not None and getattr(self, f&quot;{attr_name}_CoordinateSystem_iscamera&quot;, False) == True:
+        setattr(self, attr_name, self.rotation_matrix @ attr_value)
+        setattr(self, f&quot;{attr_name}_CoordinateSystem_iscamera&quot;, False)
+</code></pre>
+<h2 id="pca_1">三、PCA分析</h2>
+<h3 id="1_1">1. 获取电动车车身掩膜</h3>
+<p>首先，获取电动车的车身掩膜，并对掩膜数据进行二值化处理：
+- 车身区域被标记为前景区域，数据值为 1；
+- 其他区域数据值为 0。</p>
+<pre><code class="language-python">    #解码掩膜数据
+    byte_data = base64.b64decode(mask)
+    flat_mask = np.unpackbits(np.frombuffer(byte_data, dtype=np.uint8))
+    mask_shape = response.json().get[&quot;masks&quot;, []](0).get(&quot;mask_rle&quot;, {}).get(&quot;size&quot;, &quot;&quot;)
+    total_pixels = mask_shape[0] * mask_shape[1]
+    flat_mask = flat_mask[:total_pixels]
+    decoded_mask = flat_mask.reshape(mask_shape, order='F')
+    print(f&quot;解码掩膜数据成功,掩膜形状: {decoded_mask.shape}&quot;)#掩膜形状: (1205, 720)
+
+    # 扩展掩膜维度
+    decoded_mask_rgb = np.stack([decoded_mask]*3, axis=-1)  # (H, W) -&gt; (H, W, 3)
+
+# 应用掩膜，提取图像中车辆区域
+    bike_mask_rgb = raw_image * decoded_mask_rgb  # 逐像素乘法
+
+# 转为灰度图
+    bike_mask_gray = cv2.cvtColor(bike_mask_rgb, cv2.COLOR_BGR2GRAY)
+
+# 二值化处理
+    _, bike_mask_binary = cv2.threshold(bike_mask_gray, 200, 255, cv2.THRESH_BINARY)
+
+# 背景反色（前景为0，背景为255）
+    bike_mask_inverted = 255 - bike_mask_binary
+    print (f&quot;掩膜反转成功,掩膜形状: {bike_mask_inverted.shape}&quot;)#掩膜形状: (1205, 720)
+
+# 保存掩膜结果
+    cv2.imwrite(os.path.join(output_path, &quot;bike_mask.jpg&quot;), bike_mask_inverted)
+</code></pre>
+<h3 id="2_2">2. 提取车身区域</h3>
+<p>根据掩膜数据，提取原始图像中对应车身的部分，将其从原图中单独提取出来。这一步可以帮助我们集中处理车身相关信息。</p>
+<h3 id="3_2">3. 获取车身深度图</h3>
+<p>使用 <strong>Depth-Anything</strong> 模型获取车身区域的深度图。该深度图包含了每个点的深度信息，帮助我们理解车身的空间结构。</p>
+<h3 id="4_1">4. 生成点云</h3>
+<p>基于深度图数据，生成车身的 <strong>点云</strong>。点云由大量的三维坐标点组成，表示物体在空间中的分布。通过这一数据，我们能够更好地分析车身的形状和结构。</p>
+<h3 id="5">5. 点云降噪</h3>
+<ul>
+<li>去除点云中的孤立点或噪声点。</li>
+<li>解决的问题：避免噪声干扰后续的聚类和特征计算。</li>
+</ul>
+<h3 id="6-pca">6. PCA分析</h3>
+<p>使用 <strong>PCA（主成分分析）</strong> 算法对点云数据进行分析，找到点云的主要方向。
+<img alt="hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh" src="../../4_appendices/figures/PCA.png" /></p>
+<pre><code class="language-python">        # 通过PCA找到主要方向
+        from sklearn.decomposition import PCA
+
+        try:
+            # 提取属于最大簇的点
+            largest_cluster_points = points[labels == max_cluster_index]
+
+            # 执行 PCA
+            pca = PCA(n_components=3)
+            pca.fit(largest_cluster_points)
+</code></pre>
+<h2 id="_3">四、数据融合流程</h2>
+<p>在PCA分析中得到了车身点云的主要方向向量，这个方向向量基于相机坐标系，我们可以利用EXIF中的旋转角信息，通过旋转矩阵将这个向量转换到世界坐标系中，计算转换后向量在地面上投影与参考物的夹角即可得判断车辆是否停放标准</p>
+<pre><code class="language-python">    def compute_projection_angle(self, vector):
+        &quot;&quot;&quot;计算车座方向在水平面 (XOZ) 上的与参考物方向的投影夹角&quot;&quot;&quot;
+        print(f&quot;原始向量: {vector}&quot;)
+        vector= np.linalg.inv(self.rotation_matrix) @ vector# 转换到世界坐标系中
+        print(f&quot;转换后的向量: {vector}&quot;)
+        v1_proj = np.array([-vector[2],0, vector[0]])  # 投影
+        v1_proj = v1_proj / np.linalg.norm(v1_proj)# 单位化
+        print(f&quot;投影: {v1_proj}&quot;)
+        angle = np.arccos(np.dot(v1_proj, [1, 0, 0]) / (np.linalg.norm(v1_proj) * np.linalg.norm([-1, 0, 0])))
+        print(f&quot;夹角: {np.degrees(angle)}&quot;)
+        return np.degrees(angle)
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../server_design/" class="btn btn-neutral float-left" title="Flask 服务端设计"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../algorithms/" class="btn btn-neutral float-right" title="核心算法说明">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../server_design/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../algorithms/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
